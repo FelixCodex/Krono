@@ -49,18 +49,6 @@ main {
 	gap: 20px;
 }
 
-.card {
-	width: 100%;
-	min-height: 100px;
-	height: 160px;
-	display: flex;
-	align-items: center;
-	border: 1px solid #444;
-	background-color: #343434;
-	border-radius: 10px;
-	position: relative;
-}
-
 .card-drag-container {
 	width: 30px;
 	height: 100%;

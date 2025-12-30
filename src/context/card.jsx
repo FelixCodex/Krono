@@ -62,6 +62,12 @@ function useCardReducer() {
 			payload: product,
 		});
 
+	const updateProjectChecked = product =>
+		dispatch({
+			type: 'UPDATE_PROJECT_CHECKED',
+			payload: product,
+		});
+
 	const repositionCardFromProject = product =>
 		dispatch({
 			type: 'REPOSITION_CARD_FROM_PROJECT',
@@ -100,59 +106,19 @@ function useCardReducer() {
 		setIntervalTimer,
 		hourFee,
 		setHourFee,
+		updateProjectChecked,
 	};
 }
 
 // eslint-disable-next-line react/prop-types
 export function CardProvider({ children }) {
-	const {
-		state,
-		addNewProject,
-		addCardToProject,
-		deleteProject,
-		removeCardFromProject,
-		updateCardFromProject,
-		updateProjectTitle,
-		renameCardFromProject,
-		repositionCardFromProject,
-		currentProject,
-		setCurrentProject,
-		activated,
-		setActivated,
-		resumedId,
-		setResumedId,
-		initialTime,
-		setInitialTime,
-		intervalTimer,
-		setIntervalTimer,
-		hourFee,
-		setHourFee,
-	} = useCardReducer();
+	const reducer = useCardReducer();
 
 	return (
 		<CardContext.Provider
 			value={{
-				cards: state,
-				addNewProject,
-				addCardToProject,
-				deleteProject,
-				removeCardFromProject,
-				updateCardFromProject,
-				updateProjectTitle,
-				renameCardFromProject,
-				repositionCardFromProject,
-				currentProject,
-				setCurrentProject,
-				activated,
-				setActivated,
-				resumedId,
-				setResumedId,
-				initialTime,
-				setInitialTime,
-				intervalTimer,
-				setIntervalTimer,
-				hourFee,
-				setHourFee,
+				cards: reducer.state,
+				...reducer,
 			}}
 		>
 			{children}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useCard } from '../hooks/useCard.jsx';
 import {
 	convertTimeInMillisToHMS,
@@ -20,7 +20,6 @@ export function Card({ title, dateinfo, id }) {
 	const [cardId] = useState(id);
 	const { resumeClick } = useTimer();
 	const { activated } = useCard();
-	const [buttonType, setButtonType] = useState(1);
 
 	const handleClick = () => {
 		const confirmAsk = confirm('Quieres eliminar esta nota?');
@@ -42,7 +41,7 @@ export function Card({ title, dateinfo, id }) {
 
 	const handleDragStart = e => {
 		const elemt = e.currentTarget;
-		const dargPin = e.currentTarget.children[1];
+		const dargPin = document.getElementById('drag-pin-' + id);
 		const rect = elemt.getBoundingClientRect();
 		const pinRect = dargPin.getBoundingClientRect();
 		const mouseOffsetX = e.clientX - rect.left;
@@ -79,24 +78,6 @@ export function Card({ title, dateinfo, id }) {
 		});
 	};
 
-	const KeyDownEvent = e => {
-		if (e.key == 'r') {
-			if (buttonType == 2) {
-				setButtonType(1);
-			} else {
-				setButtonType(buttonType + 1);
-			}
-			console.log(buttonType);
-		}
-	};
-
-	useEffect(() => {
-		window.addEventListener('keydown', KeyDownEvent);
-		return () => {
-			window.removeEventListener('keydown', KeyDownEvent);
-		};
-	});
-
 	const handleDragOver = e => {
 		e.preventDefault();
 		const elemt = e.currentTarget;
@@ -110,7 +91,7 @@ export function Card({ title, dateinfo, id }) {
 
 	return (
 		<div
-			className={`w-full min-h-[100px] p-3 h-32 flex items-center border bg-[#303030] ${
+			className={`w-full card min-h-[100px] p-3 h-32 flex items-center border bg-[#303030] ${
 				resumedId == id ? 'border-[#646cff]' : 'border-[#444]'
 			}  rounded-lg relative`}
 			draggable={true}
@@ -122,12 +103,13 @@ export function Card({ title, dateinfo, id }) {
 		>
 			<button
 				className='cursor-grab border w-7 h-full border-[#444] p-0 bg-dotted'
-				id='drag-pin'
+				id={'drag-pin-' + id}
 			></button>
 			<div className='w-0 bg-transparent mx-3 border border-transparent border-r-[#444] h-4/5'></div>
-			<div className='w-full flex -mt-1 flex-col items-start justify-center'>
-				<h2 className='text-3xl w-fit text-gray-50'>{title}</h2>
-				<p className='w-fit text-xl text-gray-400'>
+			<div className='w-full flex -mt-1 flex- items-center justify-start gap-5'>
+				<h2 className='text-4xl w-fit text-gray-50'>{title}</h2>
+				<div className='min-w-px border-l border-[#545454] h-10 mx-1'></div>
+				<p className='w-fit text-3xl text-gray-400'>
 					{formatDateToTimePassed(convertTimeInMillisToHMS(dateinfo))}
 				</p>
 			</div>

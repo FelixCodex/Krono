@@ -82,7 +82,6 @@ function App() {
 			0
 		);
 		const feePerTime = (totalTime / 1000 / 60) * (hourFee / 60);
-		console.log(feePerTime);
 		return feePerTime.toFixed(2);
 	};
 
@@ -162,7 +161,7 @@ function App() {
 					</div>
 					<div className='w-full p-1 flex flex-col gap-3'>
 						{cards.length > 0 ? (
-							cards.map(({ title, id, projectCards }) => {
+							cards.map(({ title, id, projectCards, checked }) => {
 								const totalTime = projectCards.reduce(
 									(sum, item) => sum + Number(item.dateinfo),
 									0
@@ -173,6 +172,7 @@ function App() {
 										id={id}
 										className={id == currentProject ? 'border-[#838383]' : ''}
 										title={title}
+										checked={checked}
 										setProjectsOpen={setProjectsOpen}
 										totalTime={totalTime}
 									></ProjectCard>
@@ -198,6 +198,20 @@ function App() {
 							) : (
 								<></>
 							)}
+						</p>
+					</div>
+					<div
+						className='absolute flex justify-center right-3 -top-[50px]'
+						style={currentProject ? { display: 'flex' } : { display: 'none' }}
+					>
+						<p
+							className={`relative inline my-1 text-3xl px-4 p-1 rounded-t-xl bg-[#222] ${
+								cards.find(c => currentProject == c.id).checked
+									? 'text-green-400'
+									: 'text-red-400'
+							} border border-[#444] border-b-transparent`}
+						>
+							{calculateTotalFee()}$
 						</p>
 					</div>
 					{currentProject ? (
@@ -233,7 +247,7 @@ function App() {
 				<aside className='w-full md:w-4/5 xl:w-96 border border-[#444] bg-[#222] rounded-lg relative xl:sticky xl:top-3 xl:mt-3 text-xl p-3 py-7 gap-7 flex flex-col items-center '>
 					<input
 						type='text'
-						placeholder='¿En qué estas trabajando?'
+						placeholder='¿What are you working on?'
 						className='w-11/12 mb-3  rounded-lg border border-transparent p-3 px-4 text-2xl font-medium bg-[#1a1a1a] cursor-pointer'
 						id='counterInput'
 					/>
@@ -256,15 +270,8 @@ function App() {
 								: {}
 						}
 					>
-						{activated == true || activated == null ? 'Detener' : 'Iniciar'}
+						{activated == true || activated == null ? 'Stop' : 'Start'}
 					</button>
-					<p
-						className={`${
-							currentProject ? 'flex' : 'hidden'
-						} text-3xl font-medium `}
-					>
-						Total Fee: {calculateTotalFee()}$
-					</p>
 				</aside>
 			</main>
 		</>

@@ -29,8 +29,8 @@ export function formatDateToHoursTime(date) {
 	return `${hours}:${min}:${sec}`;
 }
 
-export function formatDateToTimePassed({ hours, minutes, segs }) {
-	return `${hours}h ${minutes}m ${segs}s`;
+export function formatDateToTimePassed({ hours, minutes }) {
+	return `${hours}h ${minutes}m`;
 }
 
 export function convertTimeInMillisToHMS(time) {

@@ -12,6 +12,7 @@ export function ProjectCard({
 	title,
 	id,
 	totalTime,
+	checked,
 	className,
 	setProjectsOpen,
 }) {
@@ -21,7 +22,7 @@ export function ProjectCard({
 		setCurrentProject,
 		deleteProject,
 		activated,
-		hourFee,
+		updateProjectChecked,
 	} = useCard();
 
 	const handleProjectClick = async () => {
@@ -47,8 +48,6 @@ export function ProjectCard({
 		}
 	};
 
-	const feePerHour = (totalTime / 1000 / 60) * (hourFee / 60);
-
 	return (
 		<div
 			className={`relative flex items-center justify-between w-full p-3 py-2 cursor-pointer border border-[#555555] rounded-lg ${className}`}
@@ -57,21 +56,18 @@ export function ProjectCard({
 		>
 			<p className='text-xl truncate'>{title}</p>
 			<div className='flex items-center gap-1 '>
-				<div className='flex items-center gap-1 xl:gap-0 2xl:gap-1 xl:flex-col 2xl:flex-row '>
-					<p className='text-lg xl:text-sm 2xl:text-lg bg-[#242424]'>
-						${feePerHour.toFixed(2)}
-					</p>
-					<div className='min-w-px border-l border-[#545454] h-8 mx-1 xl:hidden 2xl:flex'></div>
-					<p className='text-lg xl:text-sm 2xl:text-lg bg-[#242424]'>
-						{formatMillisToAdjustedHMS(totalTime)}
-					</p>
-				</div>
+				<p className='text-lg xl:text-sm 2xl:text-lg bg-[#242424]'>
+					{formatMillisToAdjustedHMS(totalTime)}
+				</p>
 				<div className='min-w-px border-l border-[#545454] h-8 mx-1'></div>
 				<button
 					className='w-7 h-7 p-0 flex items-center justify-center'
-					onClick={() => {}}
+					onClick={e => {
+						e.stopPropagation();
+						updateProjectChecked({ projectId: id });
+					}}
 				>
-					<CHECK className='w-5 h-5'></CHECK>
+					{checked && <CHECK className='w-5 h-5'></CHECK>}
 				</button>
 				<button
 					className='w-7 h-7 p-0 flex items-center justify-center'
