@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+electron-builder.yml
+
+vite.electron.config.js
+vite.renderer.config.js
+
+electron-app/*

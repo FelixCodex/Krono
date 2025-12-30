@@ -1,455 +1,466 @@
 #root {
-  width: 100%;
-  height: 100%;
-  text-align: center;
+	width: 100%;
+	height: 100%;
+	text-align: center;
 }
 
 body {
-  background-color: #1a1a1a;
+	background-color: #1a1a1a;
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+	height: 6em;
+	padding: 1.5em;
+	will-change: filter;
+	transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+	filter: drop-shadow(0 0 2em #646cffaa);
 }
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+	filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
 @keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+	a:nth-of-type(2) .logo {
+		animation: logo-spin infinite 20s linear;
+	}
 }
 
 .read-the-docs {
-  color: #888;
+	color: #888;
 }
 
 main {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  justify-content: center;
-  padding-top: 100px;
-  gap: 20px;
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	justify-content: center;
+	padding-top: 100px;
+	gap: 20px;
 }
 
 .card {
-  width: 100%;
-  min-height: 100px;
-  border: 1px solid #444;
-  background-color: #343434;
-  border-radius: 10px;
-  position: relative;
-  padding: 10px 0;
+	width: 100%;
+	min-height: 100px;
+	height: 160px;
+	display: flex;
+	align-items: center;
+	border: 1px solid #444;
+	background-color: #343434;
+	border-radius: 10px;
+	position: relative;
 }
 
-.card-drag-pin {
-  left: 10px;
-  top: calc(50% - 40px);
-  border: 1px solid #444;
-  position: absolute;
-  padding: 0;
-  width: 20px;
-  height: 80px;
-  cursor: grab;
-  background: none;
-  background-color: #303030; /* Color de fondo */
-  background-size: 18px 20px; /* Tamaño del patrón */
-  background-image: radial-gradient(
-    circle,
-    rgba(138, 138, 138, 0.411) 1px,
-    transparent 2px
-  );
+.card-drag-container {
+	width: 30px;
+	height: 100%;
+	padding: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.bg-dotted {
+	background: none;
+	background-color: #242424; /* Color de fondo */
+	background-size: 20px 20px; /* Tamaño del patrón */
+	background-image: radial-gradient(
+		circle,
+		rgba(138, 138, 138, 0.411) 1px,
+		transparent 2px
+	);
 }
 
 .card-drag-divider {
-  position: absolute;
-  width: 20px;
-  height: calc(100% + 2px);
-  border-right: 1px solid #555;
-  border-radius: 0 10px 10px 0;
+	position: absolute;
+	width: 20px;
+	border-right: 1px solid #555;
+	border-radius: 0 10px 10px 0;
 
-  top: -1px;
-  left: 20px;
+	top: -1px;
+	left: 20px;
 }
 
 .main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: relative;
 }
 
 .card-container {
-  display: flex;
-  gap: 10px;
-  flex-direction: column;
-  width: 80%;
-  min-height: 120px;
-  border: 1px solid #444;
-  background-color: #222;
-  border-radius: 8px;
-  position: relative;
-  padding: 15px;
-  margin-top: 330px;
-  justify-content: flex-start;
+	display: flex;
+	gap: 10px;
+	flex-direction: column;
+	width: 80%;
+	min-height: 120px;
+	border: 1px solid #444;
+	background-color: #222;
+	border-radius: 8px;
+	position: relative;
+	padding: 15px;
+	margin-top: 330px;
+	justify-content: flex-start;
 }
 
 .actual-project-label-container {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  left: 0;
-  right: 0;
-  top: -47px;
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	left: 0;
+	right: 0;
+	top: -47px;
 }
 
 .size-6 {
-  width: 1.4rem;
-  height: 1.4rem;
+	width: 1.4rem;
+	height: 1.4rem;
 }
 
 .actual-project-label {
-  position: relative;
-  display: inline;
-  margin: 4px 0;
-  font-size: 28px;
-  padding: 0 20px;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  background-color: #222;
-  border-top: 1px solid #444;
-  border-right: 1px solid #444;
-  border-left: 1px solid #444;
+	position: relative;
+	display: inline;
+	margin: 4px 0;
+	font-size: 28px;
+	padding: 0 20px;
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+	background-color: #222;
+	border-top: 1px solid #444;
+	border-right: 1px solid #444;
+	border-left: 1px solid #444;
 }
 
 .card-actions-divider {
-  position: absolute;
-  width: 20px;
-  height: calc(100% + 2px);
-  border-left: 1px solid #555;
-  border-radius: 10px 0 0 10px;
+	position: absolute;
+	width: 20px;
+	height: calc(100% + 2px);
+	border-left: 1px solid #555;
+	border-radius: 10px 0 0 10px;
 
-  top: -1px;
-  right: 65px;
+	top: -1px;
+	right: 65px;
 }
 
 .close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: #343434;
+	background-color: #343434;
 }
 
 .edit-btn {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background-color: #343434;
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	background-color: #343434;
 }
 
 .play-btn {
-  position: absolute;
-  display: flex;
-  top: calc(50% - 26.5px);
-  right: 95px;
-  background-color: #343434;
+	position: absolute;
+	display: flex;
+	top: calc(50% - 26.5px);
+	right: 95px;
+	background-color: #343434;
 }
 
 .play-btn svg {
-  width: 2rem;
-  height: 2rem;
+	width: 2rem;
+	height: 2rem;
 }
 
 .card-title {
-  margin: 0;
-  text-align: left;
-  font-size: 32px;
-  padding: 0 0 0 50px;
+	margin: 0;
+	text-align: left;
+	font-size: 32px;
+	padding: 0 0 0 50px;
 }
 
 .card-timeinfo {
-  margin: 0;
-  margin-top: 10px;
-  text-align: left;
-  font-size: 20px;
-  padding: 0 0 0 50px;
+	margin: 0;
+	margin-top: 10px;
+	text-align: left;
+	font-size: 20px;
+	padding: 0 0 0 50px;
 }
 
 .counterInput {
-  width: calc(100% - 58px);
-  height: 32px;
-  margin-top: 10px;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+	width: calc(100% - 58px);
+	height: 32px;
+	margin-top: 10px;
+	border-radius: 8px;
+	border: 1px solid transparent;
+	padding: 0.6em 1.2em;
+	font-size: 1em;
+	font-weight: 500;
+	font-family: inherit;
+	background-color: #1a1a1a;
+	cursor: pointer;
+	transition: border-color 0.25s;
 }
 
 .input-container {
-  width: 80%;
-  height: 250px;
-  border: 1px solid #444;
-  border-radius: 8px;
-  position: sticky;
-  top: 10px;
-  font-size: 24px;
-  padding: 10px;
+	width: 80%;
+	height: 250px;
+	border: 1px solid #444;
+	border-radius: 8px;
+	position: sticky;
+	top: 10px;
+	font-size: 24px;
+	padding: 10px;
 }
 
 .counterText {
-  font-size: 48px;
-  margin: 17px;
+	font-size: 48px;
+	margin: 17px;
 }
 
 .activateBtn {
-  width: 220px;
-  height: 60px;
-  font-size: 24px;
-  padding: 10px;
+	width: 220px;
+	height: 60px;
+	font-size: 24px;
+	padding: 10px;
 }
 
 .message-log {
-  position: absolute;
-  top: 58px;
-  left: 0;
-  right: 0;
+	position: absolute;
+	top: 58px;
+	left: 0;
+	right: 0;
 }
 
 .red {
-  color: #f17878;
+	color: #f17878;
 }
 
 .green {
-  color: #78f178;
+	color: #78f178;
+}
+
+.top-input-container {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 8px;
+}
+
+.top-input-container-buttons {
+	display: flex;
+	align-items: center;
+	gap: 5px;
 }
 
 .input-container-left {
-  display: flex;
-  position: fixed;
-  left: -100%;
-  flex-direction: column;
-  height: auto;
-  min-height: 300px;
-  height: 70vh;
-  max-height: 70vh;
-  z-index: 100;
-  background-color: #222;
-  transition: left 0.5s;
+	display: flex;
+	position: fixed;
+	left: -100%;
+	flex-direction: column;
+	height: auto;
+	min-height: 300px;
+	height: 70vh;
+	max-height: 70vh;
+	z-index: 100;
+	background-color: #222;
+	transition: left 0.5s;
 }
 
 .input-container-right {
-  background-color: #222;
-  position: absolute;
-  top: 100px;
+	background-color: #222;
+	position: absolute;
+	top: 100px;
 }
 
 .top-input-container-text {
-  margin: 14px 0;
-  text-align: start;
-  padding-left: 8px;
+	margin: 14px 0;
+	text-align: start;
+	padding-left: 8px;
 }
 
 .projects {
-  width: calc(100% - 8px);
-  padding: 5px 0 5px 8px;
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+	width: calc(100%);
+	padding: 5px 1px;
+	overflow: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
 }
 
 .project-card {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: calc(100% - 12px);
-  padding: 5px;
-  height: 50px;
-  cursor: pointer;
-  outline: 1px solid #555555;
-  border-radius: 8px;
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	width: calc(100% - 22px);
+	padding: 10px;
+	height: auto;
+	cursor: pointer;
+	outline: 1px solid #555555;
+	border-radius: 8px;
 }
 
 .project-card-divider {
-  position: absolute;
-  width: 20px;
-  height: calc(100% + 2px);
-  border-left: 1px solid #555555;
-  border-radius: 8px 0 0 8px;
-
-  top: -1px;
-  right: 54px;
+	width: 1px;
+	height: calc(80%);
+	margin: 0 5px;
+	border-left: 1px solid #555555;
 }
 
 .project-card-title {
-  font-size: 20px;
-  margin: 0;
-  max-width: 250px;
-  max-height: 37.5px;
-  text-align: start;
-  overflow: hidden;
+	font-size: 20px;
+	margin: 0;
+	max-width: 250px;
+	max-height: 37.5px;
+	text-align: start;
+	overflow: hidden;
+}
+
+.project-card-info {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 5px;
+	height: 100%;
 }
 
 .project-card-time {
-  font-size: 20px;
-  margin: 0;
-  position: absolute;
-  right: 85px;
-  background-color: #242424;
+	font-size: 20px;
+	margin: 0;
+	background-color: #242424;
 }
 
 .project-card-btn {
-  width: 32px;
-  height: 32px;
-  position: absolute;
-  padding: 0;
+	width: 32px;
+	height: 32px;
+	padding: 0;
 }
 
 .project-card-btn svg {
-  width: 1.22rem;
-  height: 1.22rem;
+	width: 1.22rem;
+	height: 1.22rem;
 }
 
 .project-card-edit {
-  right: 38px;
+	right: 38px;
 }
 
 .project-card-del {
-  right: 3px;
+	right: 3px;
 }
 
 .add-project {
-  padding: 0;
-  width: 67px;
-  height: 55px;
-  right: 16px;
-  background: #1a1a1a;
+	padding: 0;
+	width: 67px;
+	height: 55px;
+	right: 16px;
+	background: #1a1a1a;
 }
 
 .projects-toggle {
-  width: 70px;
-  height: 60px;
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #555555;
+	width: 70px;
+	height: 60px;
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	z-index: 50;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid #555555;
 }
 
 .toggle-projects {
-  width: 65px;
-  height: 55px;
-  position: absolute;
-  top: 10px;
-  right: 90px;
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+	width: 65px;
+	height: 55px;
+	z-index: 50;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .selected {
-  outline: 1px solid #555555;
-  border-radius: 8px;
+	outline: 1px solid #555555;
+	border-radius: 8px;
 }
 
 .shake {
-  animation: ErrorMessage 0.2s linear;
+	animation: ErrorMessage 0.2s linear;
 }
 
 @media (min-width: 768px) {
-  .card-container {
-    width: 60%;
-  }
-  .input-container {
-    width: 60%;
-  }
+	.card-container {
+		width: 60%;
+	}
+	.input-container {
+		width: 60%;
+	}
 }
 
 @media (max-width: 1248px) {
-  .opened {
-    left: 0;
-  }
+	.opened {
+		left: 0;
+	}
 }
 
 @media (min-width: 1248px) {
-  .main {
-    flex-direction: row;
-    align-items: start;
-  }
+	.main {
+		flex-direction: row;
+		align-items: start;
+	}
 
-  .input-container-left {
-    position: relative;
-    left: 0;
-    right: 0;
-  }
+	.input-container-left {
+		position: relative;
+		left: 0;
+		right: 0;
+	}
 
-  .card-container {
-    margin-top: 10px;
-    max-width: 800px;
-  }
+	.card-container {
+		margin-top: 10px;
+		max-width: 800px;
+	}
 
-  .input-container {
-    width: 370px;
-  }
+	.input-container {
+		width: 370px;
+	}
 
-  .counterInput {
-    width: 284px;
-  }
+	.counterInput {
+		width: 284px;
+	}
 
-  .input-container-right {
-    position: relative;
-    top: 10px;
-  }
-  .toggle-projects,
-  .projects-toggle {
-    display: none;
-  }
+	.input-container-right {
+		position: relative;
+		top: 10px;
+	}
+	.toggle-projects,
+	.projects-toggle {
+		display: none;
+	}
 }
 
 @keyframes ErrorMessage {
-  0% {
-    transform: translateX(0px);
-  }
-  20% {
-    transform: translateX(15px);
-  }
-  40% {
-    transform: translateX(-15px);
-  }
-  60% {
-    transform: translateX(15px);
-  }
-  80% {
-    transform: translateX(-15px);
-  }
-  100% {
-    transform: translateX(0px);
-  }
+	0% {
+		transform: translateX(0px);
+	}
+	20% {
+		transform: translateX(15px);
+	}
+	40% {
+		transform: translateX(-15px);
+	}
+	60% {
+		transform: translateX(15px);
+	}
+	80% {
+		transform: translateX(-15px);
+	}
+	100% {
+		transform: translateX(0px);
+	}
 }
