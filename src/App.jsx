@@ -211,7 +211,7 @@ function App() {
 				<main
 					className='w-full md:w-4/5 xl:max-w-[840px] flex gap-3 flex-col xl:mt-3 min-h-32 border rounded-xl relative p-4 justify-start'
 					style={
-						currentProjectCard.color
+						currentProjectCard && currentProjectCard.color
 							? {
 									background: currentProjectCard.color.bg,
 									borderColor: currentProjectCard.color.border,
@@ -229,12 +229,14 @@ function App() {
 						<p
 							className='relative inline my-1 text-3xl px-7 p-1 z-30 rounded-t-2xl border border-b-transparent'
 							style={{
-								background: currentProjectCard.color
-									? currentProjectCard.color.bg
-									: DEFAULT_COLOR.bg,
-								borderColor: currentProjectCard.color
-									? currentProjectCard.color.border
-									: DEFAULT_COLOR.border,
+								background:
+									currentProjectCard && currentProjectCard.color
+										? currentProjectCard.color.bg
+										: DEFAULT_COLOR.bg,
+								borderColor:
+									currentProjectCard && currentProjectCard.color
+										? currentProjectCard.color.border
+										: DEFAULT_COLOR.border,
 								borderBottom: 'none',
 							}}
 						>
