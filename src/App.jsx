@@ -2,14 +2,18 @@ import './App.css';
 import { useRef, useState } from 'react';
 import { useCard } from './hooks/useCard.jsx';
 import { useTimer } from './hooks/useTimer.jsx';
-import { BARS_ICON, PLUS_ICON, X_ICON } from './icons/icons.jsx';
+import { BARS_ICON, DOLLAR, PLUS_ICON, X_ICON } from './icons/icons.jsx';
 import { ProjectCard } from './components/ProjectCard.jsx';
 import { Card } from './components/Card.jsx';
-import { handleToggleModal, openModalWithPreset } from './utils/utils.js';
+import {
+	formatMillisToAdjustedHMS,
+	handleToggleModal,
+	openModalWithPreset,
+} from './utils/utils.js';
+import { DEFAULT_COLOR } from './color.js';
 
 function App() {
 	const cardId = useRef(0);
-
 	const {
 		cards,
 		addNewProject,
@@ -74,15 +78,25 @@ function App() {
 		handleToggleModal();
 	};
 
+	const currentProjectCard = cards.find(c => c.id == currentProject);
+
 	const calculateTotalFee = () => {
-		const card = cards.find(c => c.id == currentProject);
-		if (!card) return '';
-		const totalTime = card.projectCards.reduce(
+		if (!currentProjectCard) return '';
+		const totalTime = currentProjectCard.projectCards.reduce(
 			(sum, item) => sum + Number(item.dateinfo),
 			0
 		);
 		const feePerTime = (totalTime / 1000 / 60) * (hourFee / 60);
 		return feePerTime.toFixed(2);
+	};
+
+	const calculateTotalTime = () => {
+		if (!currentProjectCard) return '';
+		const totalTime = currentProjectCard.projectCards.reduce(
+			(sum, item) => sum + Number(item.dateinfo),
+			0
+		);
+		return totalTime;
 	};
 
 	return (
@@ -125,7 +139,7 @@ function App() {
 				</div>
 			</section>
 			<button
-				className='w-16 h-14 z-50 m-3 flex xl:hidden items-center justify-center border border-[#555555]'
+				className='w-16 h-14 z-50 m-3 flex xl:hidden items-center justify-center text-gray-800 border border-gray-300'
 				onClick={() => setProjectsOpen(true)}
 			>
 				<BARS_ICON></BARS_ICON>
@@ -143,7 +157,7 @@ function App() {
 								className='w-fit h-14 z-50 px-5 font-medium text-sm flex items-center justify-center'
 								onClick={handleFeeModal}
 							>
-								${hourFee}/h
+								<DOLLAR className={'size-5'}></DOLLAR>
 							</button>
 							<button
 								className='w-16 h-14 z-50 p-0 flex items-center justify-center'
@@ -161,20 +175,16 @@ function App() {
 					</div>
 					<div className='w-full p-1 flex flex-col gap-3'>
 						{cards.length > 0 ? (
-							cards.map(({ title, id, projectCards, checked }) => {
-								const totalTime = projectCards.reduce(
-									(sum, item) => sum + Number(item.dateinfo),
-									0
-								);
+							cards.map(({ title, id, checked, color }) => {
 								return (
 									<ProjectCard
 										key={`r-${(cardId.current += 1)}`}
 										id={id}
+										color={color}
 										className={id == currentProject ? 'border-[#838383]' : ''}
 										title={title}
 										checked={checked}
 										setProjectsOpen={setProjectsOpen}
-										totalTime={totalTime}
 									></ProjectCard>
 								);
 							})
@@ -183,12 +193,51 @@ function App() {
 						)}
 					</div>
 				</aside>
-				<main className='w-full md:w-4/5 xl:max-w-[840px] flex gap-3 flex-col xl:mt-3 min-h-32 border border-gray-300 bg-gray-50 rounded-xl relative p-4 justify-start'>
+				{/* <div
+					className='
+				bg-red-400 
+				bg-sky-400 
+				bg-lime-400 
+				bg-pink-400 
+				bg-rose-400 
+				bg-amber-400 
+				bg-orange-400 
+				bg-yellow-400 
+				bg-indigo-400 
+				bg-violet-400 
+				bg-purple-400 
+				bg-fuchsia-400 '
+				></div> */}
+				<main
+					className='w-full md:w-4/5 xl:max-w-[840px] flex gap-3 flex-col xl:mt-3 min-h-32 border rounded-xl relative p-4 justify-start'
+					style={
+						currentProjectCard.color
+							? {
+									background: currentProjectCard.color.bg,
+									borderColor: currentProjectCard.color.border,
+							  }
+							: {
+									background: DEFAULT_COLOR.bg,
+									borderColor: DEFAULT_COLOR.border,
+							  }
+					}
+				>
 					<div
-						className='absolute flex justify-center left-0 right-0 -top-[50px]'
+						className='absolute flex justify-center left-3 -top-[49px]'
 						style={currentProject ? { display: 'flex' } : { display: 'none' }}
 					>
-						<p className='relative inline my-1 text-3xl px-7 p-1 rounded-t-2xl bg-gray-50 border border-gray-300 border-b-transparent'>
+						<p
+							className='relative inline my-1 text-3xl px-7 p-1 z-30 rounded-t-2xl border border-b-transparent'
+							style={{
+								background: currentProjectCard.color
+									? currentProjectCard.color.bg
+									: DEFAULT_COLOR.bg,
+								borderColor: currentProjectCard.color
+									? currentProjectCard.color.border
+									: DEFAULT_COLOR.border,
+								borderBottom: 'none',
+							}}
+						>
 							{currentProject ? (
 								cards.map(item => {
 									if (item.id == currentProject) {
@@ -201,9 +250,14 @@ function App() {
 						</p>
 					</div>
 					<div
-						className='absolute flex justify-center right-3 -top-[55px]'
+						className='absolute flex justify-center gap-1 right-3 -top-[55px]'
 						style={currentProject ? { display: 'flex' } : { display: 'none' }}
 					>
+						<p
+							className={`relative inline my-1 text-2xl px-6 py-2 rounded-t-2xl font-bold bg-gradient-to-r from-blue-600 to-sky-600 text-white border border-purple-500/30 border-b-transparent shadow-lg`}
+						>
+							{formatMillisToAdjustedHMS(calculateTotalTime())}
+						</p>
 						<p
 							className={`relative inline my-1 text-2xl px-6 py-2 rounded-t-2xl font-bold ${
 								cards.find(c => currentProject == c.id)?.checked
@@ -223,6 +277,7 @@ function App() {
 											<Card
 												key={`r-${(cardId.current += 1)}`}
 												id={id}
+												projectColor={currentProjectCard.color}
 												title={title}
 												dateinfo={dateinfo}
 											></Card>
@@ -231,7 +286,7 @@ function App() {
 								) : (
 									<div
 										key='no-notes'
-										style={{ fontSize: '24px' }}
+										className='text-2xl mt-8'
 									>
 										There are no notes in this project
 									</div>
@@ -265,12 +320,7 @@ function App() {
 					</p>
 					<button
 						onClick={timerClick}
-						className='w-56 h-16 font-medium text-2xl p-3'
-						style={
-							activated == true || activated == null
-								? { background: '#007bff', color: '#fff ' }
-								: {}
-						}
+						className='w-56 h-16 font-medium text-2xl p-3 bg-[#007bff] text-white hover:text-white'
 					>
 						{activated == true || activated == null ? 'Stop' : 'Start'}
 					</button>

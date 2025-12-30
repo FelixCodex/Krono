@@ -50,8 +50,6 @@ export function useTimer() {
 			const actualDate = new Date().getTime();
 			const time = actualDate - intervalNextSaveTimePassed;
 
-			console.log(time);
-
 			updateCardFromProject({
 				projectId: currentProject,
 				id: intervalNextSaveResumedId,
@@ -60,10 +58,7 @@ export function useTimer() {
 		}
 	};
 
-	const handleInterval = initialTime => {
-		const actualDate = new Date();
-		const time = actualDate.getTime() - initialTime;
-
+	const formatTimeToCounterText = time => {
 		let hours = Math.floor((time % oneDay) / oneHour);
 		let minutes = Math.floor((time % oneHour) / oneMin);
 		let segs = Math.floor((time % oneMin) / 1000);
@@ -71,14 +66,22 @@ export function useTimer() {
 		hours = formatNumber(hours);
 		minutes = formatNumber(minutes);
 		segs = formatNumber(segs);
+		return `${hours}:${minutes}:${segs}`;
+	};
+
+	const handleInterval = initialTime => {
+		const actualDate = new Date();
+		const time = actualDate.getTime() - initialTime;
+
+		const timeText = formatTimeToCounterText(time);
 
 		if (time > intervalNextSaveTime) {
 			saveTimer();
 			intervalNextSaveTime = time + 2000;
-			console.log('GUARDADO');
+			// console.log('GUARDADO');
 		}
 
-		counterText().textContent = `${hours}:${minutes}:${segs}`;
+		counterText().textContent = timeText;
 	};
 
 	const timerClick = () => {
@@ -165,6 +168,8 @@ export function useTimer() {
 		setActivated(null);
 		counterInput().disabled = true;
 		counterInput().value = title;
+		const timeText = formatTimeToCounterText(time);
+		counterText().textContent = timeText;
 		setResumedId(id);
 		intervalNextSaveResumed = true;
 		intervalNextSaveResumedId = id;

@@ -1,28 +1,26 @@
 /* eslint-disable react/prop-types */
-import { useState } from 'react';
-import { CHECK, EDIT_ICON, TRASH_ICON } from '../icons/icons.jsx';
-import {
-	formatMillisToAdjustedHMS,
-	openModalWithPreset,
-	showMessage,
-} from '../utils/utils.js';
+import { CHECK, DROPLET, EDIT_ICON, TRASH_ICON } from '../icons/icons.jsx';
+import { openModalWithPreset, showMessage } from '../utils/utils.js';
 import { useCard } from '../hooks/useCard.jsx';
+import { useState } from 'react';
+import { COLORS } from '../color.js';
 
 export function ProjectCard({
 	title,
-	id,
-	totalTime,
+	id: projectId,
 	checked,
 	className,
+	color,
 	setProjectsOpen,
 }) {
-	const [projectId] = useState(id);
+	const [colorModalOpen, setColorModalOpen] = useState(false);
 	const {
 		currentProject,
 		setCurrentProject,
 		deleteProject,
 		activated,
 		updateProjectChecked,
+		updateProjectColor,
 	} = useCard();
 
 	const handleProjectClick = async () => {
@@ -48,31 +46,70 @@ export function ProjectCard({
 		}
 	};
 
+	const handleChangeColor = color => {
+		updateProjectColor({ projectId, color });
+	};
+
 	return (
 		<div
-			className={`relative flex items-center justify-between w-full p-3 py-2 cursor-pointer border ${
-				currentProject == id ? 'border-gray-400' : 'border-gray-300'
-			} rounded-lg ${className}`}
+			className={`relative flex items-center justify-between w-full p-3 py-2 bg-white cursor-pointer border ${
+				currentProject == projectId ? 'border-gray-400' : 'border-gray-300'
+			} ${colorModalOpen ? 'z-50' : 'z-10'} rounded-lg ${className}`}
 			onClick={handleProjectClick}
-			id={id}
+			id={projectId}
 		>
 			<p className='text-xl truncate'>{title}</p>
 			<div className='flex items-center gap-1 '>
-				<p className='text-lg xl:text-sm 2xl:text-lg'>
-					{formatMillisToAdjustedHMS(totalTime)}
-				</p>
-				<div className='min-w-px border-l border-gray-300 h-8 mx-1'></div>
 				<button
 					className='w-7 h-7 p-0 flex items-center justify-center'
 					onClick={e => {
 						e.stopPropagation();
-						updateProjectChecked({ projectId: id });
+						updateProjectChecked({ projectId });
 					}}
 				>
 					<CHECK
 						className={`w-5 h-5 ${checked ? 'text-gray-800' : 'text-gray-300'}`}
 					></CHECK>
 				</button>
+				<div
+					onClick={e => {
+						e.stopPropagation();
+					}}
+					className='relative cursor-default'
+				>
+					<button
+						className='w-7 h-7 p-0 flex items-center justify-center'
+						onClick={() => {
+							setColorModalOpen(!colorModalOpen);
+						}}
+						style={{
+							background: color ? color.bg : '#fff',
+						}}
+					>
+						<DROPLET className='w-5 h-5 p-0 flex items-center justify-center'></DROPLET>
+					</button>
+					<div
+						className={`${
+							colorModalOpen ? 'absolute' : 'hidden'
+						} w-32 top-[103%] p-2 -left-8 gap-1 flex flex-col border rounded-lg border-gray-300 bg-gray-50`}
+					>
+						<p className='text-sm text-start font-medium'>Colors</p>
+						<div className='flex flex-wrap gap-1'>
+							{COLORS.map((c, i) => {
+								return (
+									<ColorButton
+										key={i}
+										onClick={e => {
+											e.stopPropagation();
+											handleChangeColor(c);
+										}}
+										color={c}
+									/>
+								);
+							})}
+						</div>
+					</div>
+				</div>
 				<button
 					className='w-7 h-7 p-0 flex items-center justify-center'
 					onClick={handleEditClick}
@@ -87,5 +124,16 @@ export function ProjectCard({
 				</button>
 			</div>
 		</div>
+	);
+}
+
+function ColorButton({ className, onClick, color }) {
+	return (
+		<button
+			data-color={color}
+			className={`w-6 h-6 p-0 flex items-center justify-center ${className}`}
+			style={{ background: color ? color.bg : '' }}
+			onClick={onClick}
+		></button>
 	);
 }

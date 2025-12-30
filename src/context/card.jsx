@@ -68,6 +68,12 @@ function useCardReducer() {
 			payload: product,
 		});
 
+	const updateProjectColor = product =>
+		dispatch({
+			type: 'UPDATE_PROJECT_COLOR',
+			payload: product,
+		});
+
 	const repositionCardFromProject = product =>
 		dispatch({
 			type: 'REPOSITION_CARD_FROM_PROJECT',
@@ -87,6 +93,7 @@ function useCardReducer() {
 	return {
 		state,
 		addNewProject,
+		updateProjectColor,
 		addCardToProject,
 		deleteProject,
 		removeCardFromProject,

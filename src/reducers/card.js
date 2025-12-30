@@ -79,6 +79,14 @@ export const cardReducer = (state, action) => {
 			updateLocalStorage(newState);
 			return newState;
 		}
+		case 'UPDATE_PROJECT_COLOR': {
+			const { projectId, color } = actionPayload;
+			const projectIndex = state.findIndex(item => item.id == projectId);
+			const newState = structuredClone(state);
+			newState[projectIndex].color = color;
+			updateLocalStorage(newState);
+			return newState;
+		}
 		case 'UPDATE_PROJECT_CHECKED': {
 			const { projectId } = actionPayload;
 			const projectIndex = state.findIndex(item => item.id == projectId);
