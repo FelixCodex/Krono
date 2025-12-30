@@ -50,16 +50,18 @@ export function ProjectCard({
 
 	return (
 		<div
-			className={`relative flex items-center justify-between w-full p-3 py-2 cursor-pointer border border-[#555555] rounded-lg ${className}`}
+			className={`relative flex items-center justify-between w-full p-3 py-2 cursor-pointer border ${
+				currentProject == id ? 'border-gray-400' : 'border-gray-300'
+			} rounded-lg ${className}`}
 			onClick={handleProjectClick}
 			id={id}
 		>
 			<p className='text-xl truncate'>{title}</p>
 			<div className='flex items-center gap-1 '>
-				<p className='text-lg xl:text-sm 2xl:text-lg bg-[#242424]'>
+				<p className='text-lg xl:text-sm 2xl:text-lg'>
 					{formatMillisToAdjustedHMS(totalTime)}
 				</p>
-				<div className='min-w-px border-l border-[#545454] h-8 mx-1'></div>
+				<div className='min-w-px border-l border-gray-300 h-8 mx-1'></div>
 				<button
 					className='w-7 h-7 p-0 flex items-center justify-center'
 					onClick={e => {
@@ -67,7 +69,9 @@ export function ProjectCard({
 						updateProjectChecked({ projectId: id });
 					}}
 				>
-					{checked && <CHECK className='w-5 h-5'></CHECK>}
+					<CHECK
+						className={`w-5 h-5 ${checked ? 'text-gray-800' : 'text-gray-300'}`}
+					></CHECK>
 				</button>
 				<button
 					className='w-7 h-7 p-0 flex items-center justify-center'

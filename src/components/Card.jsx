@@ -67,9 +67,9 @@ export function Card({ title, dateinfo, id }) {
 		const fromId = e.dataTransfer.getData('fromId');
 
 		if (elem.classList.contains('card')) {
-			elem.style = 'border: 1px solid #444;';
+			elem.style = 'border: 1px solid #fff;';
 		} else {
-			elem.closest('.card').style = 'border: 1px solid #444;';
+			elem.closest('.card').style = 'border: 1px solid #fff;';
 		}
 		repositionCardFromProject({
 			projectId: currentProject,
@@ -82,17 +82,17 @@ export function Card({ title, dateinfo, id }) {
 		e.preventDefault();
 		const elemt = e.currentTarget;
 
-		elemt.style = 'border: 1px solid #fff;';
+		elemt.style = 'border: 1px solid #444;';
 	};
 
 	const handleDragLeave = e => {
-		e.currentTarget.style = 'border: 1px solid #444;';
+		e.currentTarget.style = 'border: 1px solid #d1d5db;';
 	};
 
 	return (
 		<div
-			className={`w-full card min-h-[100px] p-3 h-32 flex items-center border bg-[#303030] ${
-				resumedId == id ? 'border-[#646cff]' : 'border-[#444]'
+			className={`w-full card min-h-[100px] p-3 h-32 flex items-center border bg-white ${
+				resumedId == id ? 'border-[#007bff]' : 'border-gray-300'
 			}  rounded-lg relative`}
 			draggable={true}
 			onDragStart={handleDragStart}
@@ -102,33 +102,33 @@ export function Card({ title, dateinfo, id }) {
 			data-id={cardId}
 		>
 			<button
-				className='cursor-grab border w-7 h-full border-[#444] p-0 bg-dotted'
+				className='cursor-grab border w-7 h-full border-gray-300 p-0 bg-dotted'
 				id={'drag-pin-' + id}
 			></button>
-			<div className='w-0 bg-transparent mx-3 border border-transparent border-r-[#444] h-4/5'></div>
+			<div className='w-0 bg-transparent mx-3 border border-transparent border-r-gray-300 h-4/5'></div>
 			<div className='w-full flex -mt-1 flex- items-center justify-start gap-5'>
-				<h2 className='text-4xl w-fit text-gray-50'>{title}</h2>
-				<div className='min-w-px border-l border-[#545454] h-10 mx-1'></div>
-				<p className='w-fit text-3xl text-gray-400'>
+				<h2 className='text-4xl w-fit '>{title}</h2>
+				<div className='min-w-px border-l border-gray-300 h-10 mx-1'></div>
+				<p className='w-fit text-3xl text-gray-700'>
 					{formatDateToTimePassed(convertTimeInMillisToHMS(dateinfo))}
 				</p>
 			</div>
 			<div className={`flex h-full gap-2`}>
 				<button
-					className={`w-full h-full bg-[#242424] flex items-center justify-center`}
+					className={`w-full h-full flex items-center justify-center`}
 					onClick={handleResume}
 				>
 					<PLAY_ICON className='size-6'></PLAY_ICON>
 				</button>
 				<div className={`flex flex-col items-center gap-2`}>
 					<button
-						className='w-full h-full bg-[#242424]'
+						className='w-full h-full'
 						onClick={handleEdit}
 					>
 						<EDIT_ICON className='size-6'></EDIT_ICON>
 					</button>
 					<button
-						className='w-full h-full bg-[#242424]'
+						className='w-full h-full'
 						onClick={handleClick}
 					>
 						<TRASH_ICON className='size-6'></TRASH_ICON>
