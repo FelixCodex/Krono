@@ -266,7 +266,7 @@ function App() {
 							<button
 								className='w-11 h-11 z-50 p-0 flex items-center justify-center'
 								onClick={handleSendToEmail}
-								title='Export Data to Mail'
+								title={`Export Data to Mail${mail ? ` (${mail})` : ''}`}
 							>
 								{mailSuccess == true ? (
 									<MAIL_CHECK className={'size-5'}></MAIL_CHECK>
