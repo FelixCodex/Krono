@@ -93,7 +93,7 @@ export function Card({ title, dateinfo, id, projectColor }) {
 
 	return (
 		<div
-			className={`w-full card min-h-[100px] p-3 h-32 flex items-center border bg-white ${
+			className={`w-full card min-h-[6.25rem] p-3 h-32 flex items-center border bg-white ${
 				resumedId == id ? 'border-[#007bff]' : 'border-gray-300'
 			}  rounded-lg relative`}
 			style={

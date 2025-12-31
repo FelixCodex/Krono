@@ -99,6 +99,17 @@ function App() {
 		return totalTime;
 	};
 
+	const cardStyleColor =
+		currentProjectCard && currentProjectCard.color
+			? {
+					background: currentProjectCard.color.bg,
+					borderColor: currentProjectCard.color.border,
+			  }
+			: {
+					background: DEFAULT_COLOR.bg,
+					borderColor: DEFAULT_COLOR.border,
+			  };
+
 	return (
 		<main className='bg-[--bg-f] w-full h-screen'>
 			<section
@@ -106,7 +117,7 @@ function App() {
 				id='modalContainer'
 				style={{ display: 'none' }}
 			>
-				<div className='w-[400px] h-[230px] relative p-5 gap-6 rounded-xl flex flex-col items-center bg-gray-50 border border-gray-300 shadow shadow-[--shadow-1] overflow-hidden'>
+				<div className='w-[25rem] h-[14.375rem] relative p-5 gap-6 rounded-xl flex flex-col items-center bg-gray-50 border border-gray-300 shadow shadow-[--shadow-1] overflow-hidden'>
 					<h2
 						className='font-medium text-xl text-gray-800'
 						id='projectTitle'
@@ -146,12 +157,14 @@ function App() {
 			</button>
 			<section className='flex flex-col-reverse xl:flex-row w-full gap-16 xl:gap-5 justify-center items-center relative xl:items-start pt-4 xl:pt-20 px-4 2xl:px-10 pb-8'>
 				<aside
-					className={`w-[calc(100%-16px)] xl:w-96 fixed xl:sticky xl:mt-3 top-3 xl:left-auto min-h-80 h-[70vh] z-[100] transition-[left] duration-300  bg-gray-50 border border-gray-300 rounded-lg text-xl p-3 flex flex-col ${
+					className={`w-[calc(100%-1rem)] xl:w-96 fixed xl:sticky xl:mt-3 top-3 xl:left-auto min-h-80 h-[70vh] z-[100] transition-[left] duration-300  bg-gray-50 border border-gray-300 rounded-xl text-xl p-3 flex flex-col ${
 						projectsOpen ? 'left-2' : '-left-full'
 					}`}
 				>
 					<div className='flex items-center justify-between mb-2'>
-						<p className='my-3 text-start pl-2'>PROJECTS</p>
+						<p className='my-3 text-start pl-2 font-medium text-gray-700'>
+							PROJECTS
+						</p>
 						<div className='flex items-center gap-1'>
 							<button
 								className='w-fit h-14 z-50 px-5 font-medium text-sm flex items-center justify-center'
@@ -173,7 +186,7 @@ function App() {
 							</button>
 						</div>
 					</div>
-					<div className='w-full p-1 flex flex-col gap-3'>
+					<div className='w-full p- flex flex-col gap-2'>
 						{cards.length > 0 ? (
 							cards.map(({ title, id, checked, color }) => {
 								return (
@@ -181,7 +194,6 @@ function App() {
 										key={`r-${(cardId.current += 1)}`}
 										id={id}
 										color={color}
-										className={id == currentProject ? 'border-[#838383]' : ''}
 										title={title}
 										checked={checked}
 										setProjectsOpen={setProjectsOpen}
@@ -193,52 +205,17 @@ function App() {
 						)}
 					</div>
 				</aside>
-				{/* <div
-					className='
-				bg-red-400 
-				bg-sky-400 
-				bg-lime-400 
-				bg-pink-400 
-				bg-rose-400 
-				bg-amber-400 
-				bg-orange-400 
-				bg-yellow-400 
-				bg-indigo-400 
-				bg-violet-400 
-				bg-purple-400 
-				bg-fuchsia-400 '
-				></div> */}
 				<main
-					className='w-full md:w-4/5 xl:max-w-[840px] flex gap-3 flex-col xl:mt-3 min-h-32 border rounded-xl relative p-4 justify-start'
-					style={
-						currentProjectCard && currentProjectCard.color
-							? {
-									background: currentProjectCard.color.bg,
-									borderColor: currentProjectCard.color.border,
-							  }
-							: {
-									background: DEFAULT_COLOR.bg,
-									borderColor: DEFAULT_COLOR.border,
-							  }
-					}
+					className='w-full md:w-4/5 xl:max-w-[52.5rem] flex gap-3 flex-col xl:mt-3 min-h-32 border rounded-xl relative p-3 justify-start'
+					style={cardStyleColor}
 				>
 					<div
-						className='absolute flex justify-center left-3 -top-[49px]'
+						className='absolute flex justify-center left-3 -top-[3.0625rem]'
 						style={currentProject ? { display: 'flex' } : { display: 'none' }}
 					>
 						<p
 							className='relative inline my-1 text-3xl px-7 p-1 z-30 rounded-t-2xl border border-b-transparent'
-							style={{
-								background:
-									currentProjectCard && currentProjectCard.color
-										? currentProjectCard.color.bg
-										: DEFAULT_COLOR.bg,
-								borderColor:
-									currentProjectCard && currentProjectCard.color
-										? currentProjectCard.color.border
-										: DEFAULT_COLOR.border,
-								borderBottom: 'none',
-							}}
+							style={{ ...cardStyleColor, borderBottom: 'none' }}
 						>
 							{currentProject ? (
 								cards.map(item => {
@@ -252,13 +229,13 @@ function App() {
 						</p>
 					</div>
 					<div
-						className='absolute flex justify-center gap-1 right-3 -top-[55px]'
+						className='absolute flex justify-center gap-1 right-3 -top-[3.4375rem]'
 						style={currentProject ? { display: 'flex' } : { display: 'none' }}
 					>
 						<p
 							className={`relative inline my-1 text-2xl px-6 py-2 rounded-t-2xl font-bold bg-gradient-to-r from-blue-600 to-sky-600 text-white border border-purple-500/30 border-b-transparent shadow-lg`}
 						>
-							{formatMillisToAdjustedHMS(calculateTotalTime())}
+							Total: {formatMillisToAdjustedHMS(calculateTotalTime())}
 						</p>
 						<p
 							className={`relative inline my-1 text-2xl px-6 py-2 rounded-t-2xl font-bold ${
@@ -296,12 +273,10 @@ function App() {
 							}
 						})
 					) : (
-						<div style={{ fontSize: '24px' }}>
-							Select a project to see its notes
-						</div>
+						<div className='text-2xl'>Select a project to see its notes</div>
 					)}
 				</main>
-				<aside className='w-full md:w-4/5 xl:w-96 border border-gray-300 bg-gray-50 rounded-lg relative xl:sticky xl:top-3 xl:mt-3 text-xl p-3 py-7 gap-7 flex flex-col items-center '>
+				<aside className='w-full md:w-4/5 xl:w-96 border border-gray-300 bg-gray-50 rounded-xl relative xl:sticky xl:top-3 xl:mt-3 text-xl p-3 py-7 gap-7 flex flex-col items-center '>
 					<input
 						type='text'
 						placeholder='¿What are you working on?'
