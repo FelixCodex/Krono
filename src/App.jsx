@@ -160,7 +160,7 @@ function App() {
 		});
 
 		const date = new Date();
-		const filename = `reports/Krono_report-${date.getFullYear()}.${
+		const filename = `Krono_report-${date.getFullYear()}.${
 			date.getMonth() + 1
 		}.${date.getDate()}.txt`;
 		const blob = new Blob([exportData.join('\n')], { type: 'text/plain' });
@@ -324,7 +324,7 @@ function App() {
 											setMoreOptionOpen(!moreOptionOpen);
 											openModalWithPreset({ type: 'mail' });
 										}}
-										title='Set Mail to Export Data'
+										title={`Set Mail to Export Data${mail ? ` (${mail})` : ''}`}
 									>
 										<MAIL_PLUS className={'size-5'}></MAIL_PLUS>
 										<span className='text-nowrap font-medium'>Set Mail</span>
