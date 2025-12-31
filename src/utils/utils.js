@@ -45,13 +45,21 @@ export function convertTimeInMillisToHMS(time) {
 	return { hours, minutes, segs };
 }
 
-export function formatMillisToAdjustedHMS(time) {
+export function formatMillisToAdjustedHM(time) {
 	let hours = Math.floor((time % oneDay) / oneHour);
 	let minutes = Math.floor((time % oneHour) / oneMin);
 
 	hours = formatNumberAdjusted(hours);
 
 	return `${hours} ${minutes}m`;
+}
+
+export function formatMillisToAdjustedHMS(time) {
+	let hours = Math.floor((time % oneDay) / oneHour);
+	let minutes = Math.floor((time % oneHour) / oneMin);
+	let sec = Math.floor((time % oneMin) / 1000);
+
+	return `${hours}h ${minutes}m ${sec}s`;
 }
 
 export function showMessage(text) {

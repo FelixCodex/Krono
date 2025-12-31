@@ -116,9 +116,11 @@ export function Card({ title, dateinfo, id, projectColor }) {
 			></button>
 			<div className='w-0 bg-transparent mx-3 border border-transparent border-r-gray-300 h-4/5'></div>
 			<div className='w-full flex -mt-1 flex- items-center justify-start gap-2 xl:gap-5'>
-				<h2 className='text-xl md:text-2xl xl:text-4xl w-fit '>{title}</h2>
+				<h2 className='text-xl md:text-2xl xl:text-4xl w-fit font-medium text-gray-700'>
+					{title}
+				</h2>
 				<div className='min-w-px border-l border-gray-300 h-10 mx-1'></div>
-				<p className='w-fit text-xl md:text-2xl xl:text-3xl text-gray-700'>
+				<p className='w-fit text-xl md:text-2xl xl:text-3xl text-gray-600 font-medium'>
 					{formatDateToTimePassed(convertTimeInMillisToHMS(dateinfo))}
 				</p>
 			</div>

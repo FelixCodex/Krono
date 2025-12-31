@@ -71,7 +71,7 @@ export function ProjectCard({
 				onClick={handleProjectClick}
 				id={projectId}
 			>
-				<p className='text-xl truncate'>{title}</p>
+				<p className='text-xl truncate font-medium text-gray-800'>{title}</p>
 				<div className='flex items-center gap-1 '>
 					<button
 						className='w-7 h-7 p-0 flex items-center justify-center'

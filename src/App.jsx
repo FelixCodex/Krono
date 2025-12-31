@@ -2,10 +2,17 @@ import './App.css';
 import { useRef, useState } from 'react';
 import { useCard } from './hooks/useCard.jsx';
 import { useTimer } from './hooks/useTimer.jsx';
-import { BARS_ICON, DOLLAR, PLUS_ICON, X_ICON } from './icons/icons.jsx';
+import {
+	BARS_ICON,
+	DOLLAR,
+	FILE_TEXT,
+	PLUS_ICON,
+	X_ICON,
+} from './icons/icons.jsx';
 import { ProjectCard } from './components/ProjectCard.jsx';
 import { Card } from './components/Card.jsx';
 import {
+	formatMillisToAdjustedHM,
 	formatMillisToAdjustedHMS,
 	handleToggleModal,
 	openModalWithPreset,
@@ -76,6 +83,32 @@ function App() {
 		}
 
 		handleToggleModal();
+	};
+
+	const handleExportData = () => {
+		const exportData = cards.map(c => {
+			const projectCards = c.projectCards.map(card => {
+				return `  ${card.title} : ${formatMillisToAdjustedHMS(
+					card.dateinfo
+				)}\n`;
+			});
+
+			return `${c.title} (${c.id}): \n ${projectCards.join(' ')}`;
+		});
+
+		const date = new Date();
+		const filename = `Krono_report-${date.getFullYear()}.${
+			date.getMonth() + 1
+		}.${date.getDate()}.txt`;
+		const blob = new Blob([exportData.join('\n')], { type: 'text/plain' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = filename;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
 	};
 
 	const currentProjectCard = cards.find(c => c.id == currentProject);
@@ -167,20 +200,30 @@ function App() {
 						</p>
 						<div className='flex items-center gap-1'>
 							<button
-								className='w-fit h-14 z-50 px-5 font-medium text-sm flex items-center justify-center'
+								className='w-14 h-12 z-50 p-0 flex items-center justify-center'
+								onClick={handleExportData}
+								title='Export Data'
+							>
+								<FILE_TEXT className={'size-6'}></FILE_TEXT>
+							</button>
+							<button
+								className='w-14 h-12 z-50 px-4 font-medium text-sm flex items-center justify-center'
 								onClick={handleFeeModal}
+								title='Set Fee'
 							>
 								<DOLLAR className={'size-5'}></DOLLAR>
 							</button>
 							<button
-								className='w-16 h-14 z-50 p-0 flex items-center justify-center'
+								className='w-14 h-12 z-50 p-0 flex items-center justify-center'
 								onClick={handleModal}
+								title='Add Project'
 							>
 								<PLUS_ICON className={'size-6'}></PLUS_ICON>
 							</button>
 							<button
-								className='w-16 h-14 flex xl:hidden z-50 p-0 items-center justify-center'
+								className='w-14 h-12 flex xl:hidden z-50 p-0 items-center justify-center'
 								onClick={() => setProjectsOpen(false)}
+								title='Close'
 							>
 								<X_ICON className={'size-6'}></X_ICON>
 							</button>
@@ -214,8 +257,8 @@ function App() {
 						style={currentProject ? { display: 'flex' } : { display: 'none' }}
 					>
 						<p
-							className='relative inline my-1 text-3xl px-7 p-1 z-30 rounded-t-2xl border border-b-transparent'
-							style={{ ...cardStyleColor, borderBottom: 'none' }}
+							className='relative inline my-1 text-3xl px-7 p-1 z-30 !border-b-transparent font-medium text-gray-800 rounded-t-2xl border'
+							style={{ ...cardStyleColor }}
 						>
 							{currentProject ? (
 								cards.map(item => {
@@ -235,7 +278,7 @@ function App() {
 						<p
 							className={`relative inline my-1 text-2xl px-6 py-2 rounded-t-2xl font-bold bg-gradient-to-r from-blue-600 to-sky-600 text-white border border-purple-500/30 border-b-transparent shadow-lg`}
 						>
-							Total: {formatMillisToAdjustedHMS(calculateTotalTime())}
+							Total: {formatMillisToAdjustedHM(calculateTotalTime())}
 						</p>
 						<p
 							className={`relative inline my-1 text-2xl px-6 py-2 rounded-t-2xl font-bold ${
