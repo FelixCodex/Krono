@@ -8,6 +8,8 @@ import {
 	ELLIPSIS,
 	FILE_TEXT,
 	MAIL,
+	MAIL_CHECK,
+	MAIL_PLUS,
 	PANEL_LEFT,
 	PLUS_ICON,
 	X_ICON,
@@ -122,7 +124,6 @@ function App() {
 
 			return `<p>${c.title} (${c.id}):</p> ${projectCards.join(' ')}`;
 		});
-		console.log(exportData.join(''));
 
 		const res = await fetch(
 			'https://portfolio-email-redirect-worker.josefelixlr05.workers.dev',
@@ -136,7 +137,15 @@ function App() {
 				}),
 			}
 		);
-		console.log(res.status);
+
+		if (res.status == 200) {
+			setMailSuccess(true);
+			setTimeout(() => {
+				setMailSuccess(false);
+			}, 3000);
+		} else {
+			setMailSuccess(false);
+		}
 	};
 
 	const handleExportDataToFile = async () => {
@@ -259,7 +268,11 @@ function App() {
 								onClick={handleSendToEmail}
 								title='Export Data to Mail'
 							>
-								<MAIL className={'size-5'}></MAIL>
+								{mailSuccess == true ? (
+									<MAIL_CHECK className={'size-5'}></MAIL_CHECK>
+								) : (
+									<MAIL className={'size-5'}></MAIL>
+								)}
 							</button>
 							<button
 								className='w-11 h-11 z-50 p-0 flex items-center justify-center'
@@ -313,7 +326,7 @@ function App() {
 										}}
 										title='Set Mail to Export Data'
 									>
-										<MAIL className={'size-5'}></MAIL>
+										<MAIL_PLUS className={'size-5'}></MAIL_PLUS>
 										<span className='text-nowrap font-medium'>Set Mail</span>
 									</button>
 								</div>
