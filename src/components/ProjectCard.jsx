@@ -52,15 +52,16 @@ export function ProjectCard({
 
 	return (
 		<div
-			className={`p-1 rounded-xl border`}
+			className={`p-1 rounded-xl border cursor-pointer`}
 			style={
 				color
 					? { background: color.bg, borderColor: color.border }
 					: { background: DEFAULT_COLOR.bg, borderColor: DEFAULT_COLOR.border }
 			}
+			onClick={handleProjectClick}
 		>
 			<div
-				className={`relative flex items-center justify-between w-full p-3 py-2 bg-white cursor-pointer border ${
+				className={`relative flex items-center justify-between w-full p-3 py-2 bg-white border ${
 					currentProject == projectId ? 'border-gray-400' : 'border-gray-300'
 				} ${colorModalOpen ? 'z-50' : 'z-10'} rounded-lg ${className}`}
 				style={
@@ -68,7 +69,6 @@ export function ProjectCard({
 						? { borderColor: color.border }
 						: {}
 				}
-				onClick={handleProjectClick}
 				id={projectId}
 			>
 				<p className='text-xl truncate font-medium text-gray-800'>{title}</p>
