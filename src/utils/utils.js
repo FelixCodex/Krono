@@ -142,6 +142,15 @@ export const openModalWithPreset = ({ type, input, id }) => {
 			buttonM.dataset.id = id;
 			break;
 		}
+		case 'mail': {
+			titleM.textContent = 'Establecer correo electrónico';
+			inputM.value = '';
+			inputM.placeholder = 'Correo electrónico';
+			buttonM.textContent = 'Set';
+			buttonM.dataset.type = 'mail';
+			buttonM.dataset.id = id;
+			break;
+		}
 	}
 
 	handleToggleModal();

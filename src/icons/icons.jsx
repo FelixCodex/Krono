@@ -196,3 +196,141 @@ export function FILE_TEXT({ className }) {
 		</svg>
 	);
 }
+
+export function MAIL({ className }) {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			width='24'
+			height='24'
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='2'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+			className={className}
+		>
+			<rect
+				width='20'
+				height='16'
+				x='2'
+				y='4'
+				rx='2'
+			></rect>
+			<path d='m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7'></path>
+		</svg>
+	);
+}
+
+export function ELLIPSIS({ className }) {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			width='24'
+			height='24'
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='2'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+			className={className}
+		>
+			<path d='M17 12h.01'></path>
+			<path d='M12 12h.01'></path>
+			<path d='M7 12h.01'></path>
+		</svg>
+	);
+}
+
+export function MAIL_CHECK({ className }) {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			width='24'
+			height='24'
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='2'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+			className={className}
+		>
+			<path d='M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8'></path>
+			<path d='m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7'></path>
+			<path d='m16 19 2 2 4-4'></path>
+		</svg>
+	);
+}
+
+export function MAIL_PLUS({ className }) {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			width='24'
+			height='24'
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='2'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+			className={className}
+		>
+			<path d='M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8'></path>
+			<path d='m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7'></path>
+			<path d='M19 16v6'></path>
+			<path d='M16 19h6'></path>
+		</svg>
+	);
+}
+
+export function FILE_PLUS({ className }) {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			width='24'
+			height='24'
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='2'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+			className={className}
+		>
+			<path d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z'></path>
+			<path d='M14 2v4a2 2 0 0 0 2 2h4'></path>
+			<path d='m9 15 2 2 4-4'></path>
+		</svg>
+	);
+}
+
+export function PANEL_LEFT({ className }) {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			width='24'
+			height='24'
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='2'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+			className={className}
+		>
+			<rect
+				width='18'
+				height='18'
+				x='3'
+				y='3'
+				rx='2'
+			></rect>
+			<path d='M9 3v18'></path>
+			<path d='m16 15-3-3 3-3'></path>
+		</svg>
+	);
+}

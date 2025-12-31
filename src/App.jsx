@@ -5,7 +5,10 @@ import { useTimer } from './hooks/useTimer.jsx';
 import {
 	BARS_ICON,
 	DOLLAR,
+	ELLIPSIS,
 	FILE_TEXT,
+	MAIL,
+	PANEL_LEFT,
 	PLUS_ICON,
 	X_ICON,
 } from './icons/icons.jsx';
@@ -29,9 +32,14 @@ function App() {
 		renameCardFromProject,
 		hourFee,
 		setHourFee,
+		mail,
+		setMail,
 	} = useCard();
 	const { activated, timerClick } = useTimer();
 	const [projectsOpen, setProjectsOpen] = useState(false);
+	const [moreOptionOpen, setMoreOptionOpen] = useState(false);
+	const [inputWrong, setInputWrong] = useState(false);
+	const [mailSuccess, setMailSuccess] = useState(false);
 
 	const addProjectInput = useRef();
 
@@ -67,6 +75,8 @@ function App() {
 			}
 			case 'fee': {
 				const fee = Number(addProjectInput.current.value);
+				if (isNaN(fee)) return;
+
 				setHourFee(fee);
 				addProjectInput.current.value = '';
 				break;
@@ -80,12 +90,56 @@ function App() {
 				addProjectInput.current.value = '';
 				break;
 			}
+			case 'mail': {
+				if (!addProjectInput.current.value.endsWith('@gmail.com')) {
+					setInputWrong(true);
+					setTimeout(() => {
+						setInputWrong(false);
+					}, 500);
+					return;
+				}
+
+				setMail(addProjectInput.current.value);
+				addProjectInput.current.value = '';
+				break;
+			}
 		}
 
 		handleToggleModal();
 	};
 
-	const handleExportData = async () => {
+	const handleSendToEmail = async () => {
+		if (!mail) {
+			openModalWithPreset({ type: 'mail' });
+			return;
+		}
+		const exportData = cards.map(c => {
+			const projectCards = c.projectCards.map(card => {
+				return `<p style="margin-left: 14px"> ${
+					card.title
+				} : ${formatMillisToAdjustedHMS(card.dateinfo)}</p>`;
+			});
+
+			return `<p>${c.title} (${c.id}):</p> ${projectCards.join(' ')}`;
+		});
+		console.log(exportData.join(''));
+
+		const res = await fetch(
+			'https://portfolio-email-redirect-worker.josefelixlr05.workers.dev',
+			{
+				method: 'POST',
+				body: JSON.stringify({
+					from: 'Krono',
+					to: mail,
+					data: exportData.join(''),
+					type: 'data',
+				}),
+			}
+		);
+		console.log(res.status);
+	};
+
+	const handleExportDataToFile = async () => {
 		const exportData = cards.map(c => {
 			const projectCards = c.projectCards.map(card => {
 				return `  ${card.title} : ${formatMillisToAdjustedHMS(
@@ -95,20 +149,6 @@ function App() {
 
 			return `${c.title} (${c.id}): \n ${projectCards.join(' ')}`;
 		});
-		const res = await fetch(
-			'https://portfolio-email-redirect-worker.josefelixlr05.workers.dev',
-			{
-				method: 'POST',
-				body: {
-					from: 'Krono',
-					to: 'josefelixlr05@gmail.com',
-					data: JSON.stringify(exportData),
-					type: 'data',
-				},
-			}
-		);
-		console.log(res.status);
-		return;
 
 		const date = new Date();
 		const filename = `Krono_report-${date.getFullYear()}.${
@@ -158,7 +198,7 @@ function App() {
 			  };
 
 	return (
-		<main className='bg-[--bg-f] w-full h-screen'>
+		<main className='bg-dotted-back w-full h-screen'>
 			<section
 				className='fixed left-0 top-0 z-[200] items-center justify-center w-full h-full bg-[#00000066]'
 				id='modalContainer'
@@ -173,9 +213,10 @@ function App() {
 					</h2>
 					<input
 						ref={addProjectInput}
-						type='text'
 						placeholder='Nombre del projecto'
-						className='w-11/12 -mt-1 rounded-lg p-2 px-3 cursor-pointer transition-colors bg-gray-100 border border-gray-300 text-lg font-medium'
+						className={`w-11/12 -mt-1 ${
+							inputWrong ? 'shake border-red-500' : 'border-gray-300 '
+						} rounded-lg p-2 px-3 cursor-pointer transition-colors bg-gray-100 border text-lg font-medium`}
 						id='projectInput'
 					/>
 					<div className='flex items-center justify-center gap-3 mt-1'>
@@ -188,8 +229,8 @@ function App() {
 						<button
 							className='w-28 h-16'
 							id='projectButton'
-							onClick={handleClickProject}
 							data-type='add'
+							onClick={handleClickProject}
 						>
 							Add
 						</button>
@@ -214,32 +255,75 @@ function App() {
 						</p>
 						<div className='flex items-center gap-1'>
 							<button
-								className='w-14 h-12 z-50 p-0 flex items-center justify-center'
-								onClick={handleExportData}
-								title='Export Data'
+								className='w-11 h-11 z-50 p-0 flex items-center justify-center'
+								onClick={handleSendToEmail}
+								title='Export Data to Mail'
 							>
-								<FILE_TEXT className={'size-6'}></FILE_TEXT>
+								<MAIL className={'size-5'}></MAIL>
 							</button>
 							<button
-								className='w-14 h-12 z-50 px-4 font-medium text-sm flex items-center justify-center'
-								onClick={handleFeeModal}
-								title='Set Fee'
+								className='w-11 h-11 z-50 p-0 flex items-center justify-center'
+								onClick={handleExportDataToFile}
+								title='Export Data to File'
 							>
-								<DOLLAR className={'size-5'}></DOLLAR>
+								<FILE_TEXT className={'size-5'}></FILE_TEXT>
 							</button>
 							<button
-								className='w-14 h-12 z-50 p-0 flex items-center justify-center'
+								className='w-11 h-11 z-50 p-0 flex items-center justify-center'
 								onClick={handleModal}
 								title='Add Project'
 							>
 								<PLUS_ICON className={'size-6'}></PLUS_ICON>
 							</button>
+							<div className={`relative z-[150] flex justify-center`}>
+								<button
+									className='w-11 h-11 z-50 p-0 flex items-center justify-center'
+									onClick={() => {
+										setMoreOptionOpen(!moreOptionOpen);
+									}}
+									title='Add Project'
+								>
+									{moreOptionOpen ? (
+										<X_ICON className={'size-6'}></X_ICON>
+									) : (
+										<ELLIPSIS className={'size-8'}></ELLIPSIS>
+									)}
+								</button>
+								<div
+									className={`p-1 gap-1 absolute top-[110%] right-0 flex flex-col items-center justify-start bg-gray-50 rounded-xl border border-gray-300 ${
+										moreOptionOpen ? 'flex' : 'hidden'
+									}`}
+								>
+									<button
+										className=' w-full h-11 z-50 px-3 font-medium text-sm flex gap-1 items-center justify-center'
+										onClick={() => {
+											setMoreOptionOpen(!moreOptionOpen);
+											handleFeeModal();
+										}}
+										title='Set Fee'
+									>
+										<DOLLAR className={'size-5'}></DOLLAR>
+										<span className='text-nowrap font-medium'>Set Fee</span>
+									</button>
+									<button
+										className=' w-full h-11 z-50 px-3 flex gap-1 text-sm items-center justify-center'
+										onClick={() => {
+											setMoreOptionOpen(!moreOptionOpen);
+											openModalWithPreset({ type: 'mail' });
+										}}
+										title='Set Mail to Export Data'
+									>
+										<MAIL className={'size-5'}></MAIL>
+										<span className='text-nowrap font-medium'>Set Mail</span>
+									</button>
+								</div>
+							</div>
 							<button
-								className='w-14 h-12 flex xl:hidden z-50 p-0 items-center justify-center'
+								className='w-11 h-11 flex xl:hidden z-50 p-0 items-center justify-center'
 								onClick={() => setProjectsOpen(false)}
 								title='Close'
 							>
-								<X_ICON className={'size-6'}></X_ICON>
+								<PANEL_LEFT className={'size-6'}></PANEL_LEFT>
 							</button>
 						</div>
 					</div>
@@ -319,7 +403,7 @@ function App() {
 									) : (
 										<div
 											key='no-notes'
-											className='text-2xl mt-8'
+											className='text-2xl my-8'
 										>
 											There are no notes in this project
 										</div>
@@ -374,7 +458,7 @@ function App() {
 					<p
 						className={`font-medium text-5xl  ${
 							activated == true || activated == null
-								? 'animate-pulse text-red-500'
+								? 'text-red-600'
 								: 'text-gray-800'
 						}`}
 						id='counterText'

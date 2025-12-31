@@ -1,11 +1,12 @@
 import { createContext, useReducer, useState } from 'react';
 import { cardInitialState, cardReducer } from '../reducers/card.js';
 
-export const hourFeeInitialState =
-	JSON.parse(localStorage.getItem('hourFee')) || 0;
+export const hourFeeInitialState = localStorage.getItem('hourFee') || 0;
+
+export const mailInitialState = localStorage.getItem('mailToSend') || 0;
 
 export const currentProjectInitialState =
-	JSON.parse(localStorage.getItem('currentProject')) || null;
+	localStorage.getItem('currentProject') || null;
 
 export const CardContext = createContext();
 
@@ -19,6 +20,7 @@ function useCardReducer() {
 	const [initialTime, setInitialTime] = useState(0);
 	const [intervalTimer, setIntervalTimer] = useState(null);
 	const [hourFee, setHourFeeValue] = useState(hourFeeInitialState);
+	const [mail, setMailValue] = useState(mailInitialState);
 
 	const addNewProject = product =>
 		dispatch({
@@ -90,6 +92,12 @@ function useCardReducer() {
 		localStorage.setItem('currentProject', value);
 	};
 
+	const setMail = value => {
+		console.log(value);
+		setMailValue(value);
+		localStorage.setItem('mailToSend', value);
+	};
+
 	return {
 		state,
 		addNewProject,
@@ -114,6 +122,8 @@ function useCardReducer() {
 		hourFee,
 		setHourFee,
 		updateProjectChecked,
+		setMail,
+		mail,
 	};
 }
 
