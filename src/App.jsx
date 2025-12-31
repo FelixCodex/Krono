@@ -85,7 +85,7 @@ function App() {
 		handleToggleModal();
 	};
 
-	const handleExportData = () => {
+	const handleExportData = async () => {
 		const exportData = cards.map(c => {
 			const projectCards = c.projectCards.map(card => {
 				return `  ${card.title} : ${formatMillisToAdjustedHMS(
@@ -95,6 +95,20 @@ function App() {
 
 			return `${c.title} (${c.id}): \n ${projectCards.join(' ')}`;
 		});
+		const res = await fetch(
+			'https://portfolio-email-redirect-worker.josefelixlr05.workers.dev',
+			{
+				method: 'POST',
+				body: {
+					from: 'Krono',
+					to: 'josefelixlr05@gmail.com',
+					data: JSON.stringify(exportData),
+					type: 'data',
+				},
+			}
+		);
+		console.log(res.status);
+		return;
 
 		const date = new Date();
 		const filename = `Krono_report-${date.getFullYear()}.${
@@ -248,75 +262,102 @@ function App() {
 						)}
 					</div>
 				</aside>
-				<main
-					className='w-full md:w-4/5 xl:max-w-[52.5rem] flex gap-3 flex-col xl:mt-3 min-h-32 border rounded-xl relative p-3 justify-start'
-					style={cardStyleColor}
-				>
-					<div
-						className='absolute flex justify-center left-3 -top-[3.0625rem]'
-						style={currentProject ? { display: 'flex' } : { display: 'none' }}
+				<main className='w-full md:w-4/5 xl:max-w-[52.5rem] flex gap-3 flex-col xl:mt-3 min-h-32 relative'>
+					<section
+						className='w-full flex gap-3 flex-col border rounded-xl relative p-3 justify-start'
+						style={cardStyleColor}
 					>
-						<p
-							className='relative inline my-1 text-3xl px-7 p-1 z-30 !border-b-transparent font-medium text-gray-800 rounded-t-2xl border'
-							style={{ ...cardStyleColor }}
+						<div
+							className='absolute flex justify-center left-3 -top-[3.0625rem]'
+							style={currentProject ? { display: 'flex' } : { display: 'none' }}
 						>
-							{currentProject ? (
-								cards.map(item => {
-									if (item.id == currentProject) {
-										return item.title;
-									}
-								})
-							) : (
-								<></>
-							)}
-						</p>
-					</div>
-					<div
-						className='absolute flex justify-center gap-1 right-3 -top-[3.4375rem]'
-						style={currentProject ? { display: 'flex' } : { display: 'none' }}
-					>
-						<p
-							className={`relative inline my-1 text-2xl px-6 py-2 rounded-t-2xl font-bold bg-gradient-to-r from-blue-600 to-sky-600 text-white border border-purple-500/30 border-b-transparent shadow-lg`}
-						>
-							Total: {formatMillisToAdjustedHM(calculateTotalTime())}
-						</p>
-						<p
-							className={`relative inline my-1 text-2xl px-6 py-2 rounded-t-2xl font-bold ${
-								cards.find(c => currentProject == c.id)?.checked
-									? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white'
-									: 'bg-gradient-to-r from-rose-600 to-pink-600 text-white'
-							} border border-purple-500/30 border-b-transparent shadow-lg`}
-						>
-							${calculateTotalFee()}
-						</p>
-					</div>
-					{currentProject ? (
-						cards.map(item => {
-							if (item.id == currentProject) {
-								return item.projectCards.length > 0 ? (
-									item.projectCards.map(({ id, title, dateinfo }) => {
-										return (
-											<Card
-												key={`r-${(cardId.current += 1)}`}
-												id={id}
-												projectColor={currentProjectCard.color}
-												title={title}
-												dateinfo={dateinfo}
-											></Card>
-										);
+							<p
+								className='relative inline my-1 text-3xl px-7 p-1 z-30 !border-b-transparent font-medium text-gray-800 rounded-t-2xl border'
+								style={{ ...cardStyleColor }}
+							>
+								{currentProject ? (
+									cards.map(item => {
+										if (item.id == currentProject) {
+											return item.title;
+										}
 									})
 								) : (
-									<div
-										key='no-notes'
-										className='text-2xl mt-8'
-									>
-										There are no notes in this project
-									</div>
-								);
-							}
-						})
+									<></>
+								)}
+							</p>
+						</div>
+						<div
+							className='absolute flex justify-center gap-1 right-3 -top-[3.4375rem]'
+							style={currentProject ? { display: 'flex' } : { display: 'none' }}
+						>
+							<p
+								className={`relative inline my-1 text-2xl px-6 py-2 rounded-t-2xl font-bold bg-gradient-to-r from-blue-600 to-sky-600 text-white border border-purple-500/30 border-b-transparent shadow-lg`}
+							>
+								Total: {formatMillisToAdjustedHM(calculateTotalTime())}
+							</p>
+							<p
+								className={`relative inline my-1 text-2xl px-6 py-2 rounded-t-2xl font-bold ${
+									cards.find(c => currentProject == c.id)?.checked
+										? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white'
+										: 'bg-gradient-to-r from-rose-600 to-pink-600 text-white'
+								} border border-purple-500/30 border-b-transparent shadow-lg`}
+							>
+								${calculateTotalFee()}
+							</p>
+						</div>
+						{currentProject ? (
+							cards.map(item => {
+								if (item.id == currentProject) {
+									return item.projectCards.length > 0 ? (
+										<Card
+											key={`r-${(cardId.current += 1)}`}
+											id={item.projectCards[0].id}
+											projectColor={currentProjectCard.color}
+											title={item.projectCards[0].title}
+											dateinfo={item.projectCards[0].dateinfo}
+										></Card>
+									) : (
+										<div
+											key='no-notes'
+											className='text-2xl mt-8'
+										>
+											There are no notes in this project
+										</div>
+									);
+								}
+							})
+						) : (
+							<div className='text-2xl'>Select a project to see its notes</div>
+						)}
+					</section>
+
+					{currentProject && currentProjectCard.projectCards.length > 1 ? (
+						<section
+							className='w-full flex gap-3 flex-col border rounded-xl relative p-3 justify-start'
+							style={cardStyleColor}
+						>
+							{cards.map(item => {
+								if (item.id == currentProject) {
+									return item.projectCards.length > 1
+										? item.projectCards.map(({ id, title, dateinfo }, i) => {
+												return i != 0 ? (
+													<Card
+														key={`r-${(cardId.current += 1)}`}
+														id={id}
+														projectColor={currentProjectCard.color}
+														title={title}
+														dateinfo={dateinfo}
+													></Card>
+												) : (
+													<></>
+												);
+										  })
+										: '';
+								}
+							})}
+						</section>
 					) : (
-						<div className='text-2xl'>Select a project to see its notes</div>
+						<></>
 					)}
 				</main>
 				<aside className='w-full md:w-4/5 xl:w-96 border border-gray-300 bg-gray-50 rounded-xl relative xl:sticky xl:top-3 xl:mt-3 text-xl p-3 py-7 gap-7 flex flex-col items-center '>
@@ -331,8 +372,10 @@ function App() {
 						id='message-log'
 					></p>
 					<p
-						className={`font-medium text-5xl text-gray-800 ${
-							activated == true || activated == null ? 'animate-pulse' : ''
+						className={`font-medium text-5xl  ${
+							activated == true || activated == null
+								? 'animate-pulse text-red-500'
+								: 'text-gray-800'
 						}`}
 						id='counterText'
 					>

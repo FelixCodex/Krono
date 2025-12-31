@@ -28,4 +28,5 @@ electron-builder.yml
 vite.electron.config.js
 vite.renderer.config.js
 
+assets/*
 electron-app/*
