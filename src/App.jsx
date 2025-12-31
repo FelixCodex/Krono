@@ -160,7 +160,7 @@ function App() {
 		});
 
 		const date = new Date();
-		const filename = `Krono_report-${date.getFullYear()}.${
+		const filename = `reports/Krono_report-${date.getFullYear()}.${
 			date.getMonth() + 1
 		}.${date.getDate()}.txt`;
 		const blob = new Blob([exportData.join('\n')], { type: 'text/plain' });
