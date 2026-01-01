@@ -3,16 +3,19 @@ import { useRef, useState } from 'react';
 import { useCard } from './hooks/useCard.jsx';
 import { useTimer } from './hooks/useTimer.jsx';
 import {
-	BARS_ICON,
+	BARSICON,
+	CIRCLEDASHED,
 	DOLLAR,
 	ELLIPSIS,
-	FILE_TEXT,
+	FILETEXT,
 	MAIL,
-	MAIL_CHECK,
-	MAIL_PLUS,
-	PANEL_LEFT,
-	PLUS_ICON,
-	X_ICON,
+	MAILCHECK,
+	MAILLOADING,
+	MAILPLUS,
+	MAILX,
+	PANELLEFT,
+	PLUSICON,
+	XICON,
 } from './icons/icons.jsx';
 import { ProjectCard } from './components/ProjectCard.jsx';
 import { Card } from './components/Card.jsx';
@@ -41,7 +44,7 @@ function App() {
 	const [projectsOpen, setProjectsOpen] = useState(false);
 	const [moreOptionOpen, setMoreOptionOpen] = useState(false);
 	const [inputWrong, setInputWrong] = useState(false);
-	const [mailSuccess, setMailSuccess] = useState(false);
+	const [mailReq, setMailReq] = useState({ success: null, loading: false });
 
 	const addProjectInput = useRef();
 
@@ -115,6 +118,9 @@ function App() {
 			openModalWithPreset({ type: 'mail' });
 			return;
 		}
+		if (mailReq.loading) {
+			return;
+		}
 		const exportData = cards.map(c => {
 			const projectCards = c.projectCards.map(card => {
 				return `<p style="margin-left: 14px"> ${
@@ -125,26 +131,31 @@ function App() {
 			return `<p>${c.title} (${c.id}):</p> ${projectCards.join(' ')}`;
 		});
 
-		const res = await fetch(
-			'https://portfolio-email-redirect-worker.josefelixlr05.workers.dev',
-			{
-				method: 'POST',
-				body: JSON.stringify({
-					from: 'Krono',
-					to: mail,
-					data: exportData.join(''),
-					type: 'data',
-				}),
-			}
-		);
+		setMailReq(p => ({ ...p, loading: true }));
+		try {
+			const res = await fetch(
+				'https://portfolio-email-redirect-worker.josefelixlr05.workers.dev',
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						from: 'Krono',
+						to: mail,
+						data: exportData.join(''),
+						type: 'data',
+					}),
+				}
+			);
 
-		if (res.status == 200) {
-			setMailSuccess(true);
-			setTimeout(() => {
-				setMailSuccess(false);
-			}, 3000);
-		} else {
-			setMailSuccess(false);
+			if (res.status == 200) {
+				setMailReq(p => ({ ...p, success: true }));
+				setTimeout(() => {
+					setMailReq(p => ({ ...p, success: null }));
+				}, 3000);
+			} else {
+				setMailReq(p => ({ ...p, success: false }));
+			}
+		} finally {
+			setMailReq(p => ({ ...p, loading: false }));
 		}
 	};
 
@@ -250,7 +261,7 @@ function App() {
 				className='w-16 h-14 z-50 m-3 flex xl:hidden items-center justify-center text-gray-800 border border-gray-300'
 				onClick={() => setProjectsOpen(true)}
 			>
-				<BARS_ICON></BARS_ICON>
+				<BARSICON></BARSICON>
 			</button>
 			<section className='flex flex-col-reverse xl:flex-row w-full gap-16 xl:gap-5 justify-center items-center relative xl:items-start pt-4 xl:pt-20 px-4 2xl:px-10 pb-8'>
 				<aside
@@ -268,10 +279,14 @@ function App() {
 								onClick={handleSendToEmail}
 								title={`Export Data to Mail${mail ? ` (${mail})` : ''}`}
 							>
-								{mailSuccess == true ? (
-									<MAIL_CHECK className={'size-5'}></MAIL_CHECK>
-								) : (
+								{mailReq.loading ? (
+									<MAILLOADING className={'size-5'}></MAILLOADING>
+								) : mailReq.success == null ? (
 									<MAIL className={'size-5'}></MAIL>
+								) : mailReq.success == true ? (
+									<MAILCHECK className={'size-5'}></MAILCHECK>
+								) : (
+									<MAILX className={'size-5'}></MAILX>
 								)}
 							</button>
 							<button
@@ -279,14 +294,14 @@ function App() {
 								onClick={handleExportDataToFile}
 								title='Export Data to File'
 							>
-								<FILE_TEXT className={'size-5'}></FILE_TEXT>
+								<FILETEXT className={'size-5'}></FILETEXT>
 							</button>
 							<button
 								className='w-11 h-11 z-50 p-0 flex items-center justify-center'
 								onClick={handleModal}
 								title='Add Project'
 							>
-								<PLUS_ICON className={'size-6'}></PLUS_ICON>
+								<PLUSICON className={'size-6'}></PLUSICON>
 							</button>
 							<div className={`relative z-[150] flex justify-center`}>
 								<button
@@ -297,7 +312,7 @@ function App() {
 									title='Add Project'
 								>
 									{moreOptionOpen ? (
-										<X_ICON className={'size-6'}></X_ICON>
+										<XICON className={'size-6'}></XICON>
 									) : (
 										<ELLIPSIS className={'size-8'}></ELLIPSIS>
 									)}
@@ -326,7 +341,7 @@ function App() {
 										}}
 										title={`Set Mail to Export Data${mail ? ` (${mail})` : ''}`}
 									>
-										<MAIL_PLUS className={'size-5'}></MAIL_PLUS>
+										<MAILPLUS className={'size-5'}></MAILPLUS>
 										<span className='text-nowrap font-medium'>Set Mail</span>
 									</button>
 								</div>
@@ -336,7 +351,7 @@ function App() {
 								onClick={() => setProjectsOpen(false)}
 								title='Close'
 							>
-								<PANEL_LEFT className={'size-6'}></PANEL_LEFT>
+								<PANELLEFT className={'size-6'}></PANELLEFT>
 							</button>
 						</div>
 					</div>

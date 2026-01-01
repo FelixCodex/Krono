@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { CHECK, DROPLET, EDIT_ICON, TRASH_ICON } from '../icons/icons.jsx';
+import { CHECK, DROPLET, EDITICON, TRASHICON } from '../icons/icons.jsx';
 import { openModalWithPreset, showMessage } from '../utils/utils.js';
 import { useCard } from '../hooks/useCard.jsx';
 import { useState } from 'react';
@@ -129,13 +129,13 @@ export function ProjectCard({
 						className='w-7 h-7 p-0 flex items-center justify-center'
 						onClick={handleEditClick}
 					>
-						<EDIT_ICON className='w-5 h-5'></EDIT_ICON>
+						<EDITICON className='w-5 h-5'></EDITICON>
 					</button>
 					<button
 						className='w-7 h-7 p-0 flex items-center justify-center'
 						onClick={handleDeleteClick}
 					>
-						<TRASH_ICON className='w-5 h-5'></TRASH_ICON>
+						<TRASHICON className='w-5 h-5'></TRASHICON>
 					</button>
 				</div>
 			</div>

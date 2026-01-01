@@ -7,7 +7,7 @@ import {
 	openModalWithPreset,
 	showMessage,
 } from '../utils/utils.js';
-import { EDIT_ICON, PLAY_ICON, TRASH_ICON } from '../icons/icons.jsx';
+import { EDITICON, PLAYICON, TRASHICON } from '../icons/icons.jsx';
 import { useTimer } from '../hooks/useTimer.jsx';
 import { COLORS } from '../color.js';
 
@@ -129,20 +129,20 @@ export function Card({ title, dateinfo, id, projectColor }) {
 					className={`w-full h-full flex items-center justify-center bg-[#007bff] text-white hover:text-white`}
 					onClick={handleResume}
 				>
-					<PLAY_ICON className='size-6'></PLAY_ICON>
+					<PLAYICON className='size-6'></PLAYICON>
 				</button>
 				<div className={`flex flex-col items-center gap-2`}>
 					<button
 						className='w-full h-full'
 						onClick={handleEdit}
 					>
-						<EDIT_ICON className='size-6'></EDIT_ICON>
+						<EDITICON className='size-6'></EDITICON>
 					</button>
 					<button
 						className='w-full h-full hover:text-red-500 hover:border-red-500'
 						onClick={handleClick}
 					>
-						<TRASH_ICON className='size-6'></TRASH_ICON>
+						<TRASHICON className='size-6'></TRASHICON>
 					</button>
 				</div>
 			</div>

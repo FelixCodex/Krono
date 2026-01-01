@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-export function PLUS_ICON({ className }) {
+export function PLUSICON({ className }) {
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
@@ -18,7 +18,7 @@ export function PLUS_ICON({ className }) {
 	);
 }
 
-export function TRASH_ICON({ className }) {
+export function TRASHICON({ className }) {
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
@@ -37,7 +37,7 @@ export function TRASH_ICON({ className }) {
 	);
 }
 
-export function PLAY_ICON({ className }) {
+export function PLAYICON({ className }) {
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
@@ -54,7 +54,7 @@ export function PLAY_ICON({ className }) {
 	);
 }
 
-export function EDIT_ICON({ className }) {
+export function EDITICON({ className }) {
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
@@ -73,7 +73,7 @@ export function EDIT_ICON({ className }) {
 	);
 }
 
-export function BARS_ICON({ className }) {
+export function BARSICON({ className }) {
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
@@ -92,7 +92,7 @@ export function BARS_ICON({ className }) {
 	);
 }
 
-export function X_ICON({ className }) {
+export function XICON({ className }) {
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
@@ -174,7 +174,7 @@ export function DOLLAR({ className }) {
 	);
 }
 
-export function FILE_TEXT({ className }) {
+export function FILETEXT({ className }) {
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
@@ -244,7 +244,7 @@ export function ELLIPSIS({ className }) {
 	);
 }
 
-export function MAIL_CHECK({ className }) {
+export function MAILCHECK({ className }) {
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
@@ -265,7 +265,7 @@ export function MAIL_CHECK({ className }) {
 	);
 }
 
-export function MAIL_PLUS({ className }) {
+export function MAILPLUS({ className }) {
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
@@ -287,7 +287,82 @@ export function MAIL_PLUS({ className }) {
 	);
 }
 
-export function FILE_PLUS({ className }) {
+export function MAILLOADING({ className }) {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			width='24'
+			height='24'
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='2'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+			className={className}
+		>
+			<path d='M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8'></path>
+			<path d='m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7'></path>
+			<circle
+				cx='18'
+				cy='18'
+				r='4'
+				strokeDasharray='3 3 '
+				fill='none'
+			></circle>
+		</svg>
+	);
+}
+
+export function MAILX({ className }) {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			width='24'
+			height='24'
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='2'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+			className={className}
+		>
+			<path d='M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h9'></path>
+			<path d='m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7'></path>
+			<path d='m17 17 4 4'></path>
+			<path d='m21 17-4 4'></path>
+		</svg>
+	);
+}
+
+export function CIRCLEDASHED({ className }) {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			width='24'
+			height='24'
+			viewBox='0 0 24 24'
+			fill='none'
+			stroke='currentColor'
+			strokeWidth='2'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+			className={className}
+		>
+			<path d='M10.1 2.182a10 10 0 0 1 3.8 0'></path>
+			<path d='M13.9 21.818a10 10 0 0 1-3.8 0'></path>
+			<path d='M17.609 3.721a10 10 0 0 1 2.69 2.7'></path>
+			<path d='M2.182 13.9a10 10 0 0 1 0-3.8'></path>
+			<path d='M20.279 17.609a10 10 0 0 1-2.7 2.69'></path>
+			<path d='M21.818 10.1a10 10 0 0 1 0 3.8'></path>
+			<path d='M3.721 6.391a10 10 0 0 1 2.7-2.69'></path>
+			<path d='M6.391 20.279a10 10 0 0 1-2.69-2.7'></path>
+		</svg>
+	);
+}
+
+export function FILEPLUS({ className }) {
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
@@ -308,7 +383,7 @@ export function FILE_PLUS({ className }) {
 	);
 }
 
-export function PANEL_LEFT({ className }) {
+export function PANELLEFT({ className }) {
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
