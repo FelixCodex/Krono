@@ -4,7 +4,6 @@ import { useCard } from './hooks/useCard.jsx';
 import { useTimer } from './hooks/useTimer.jsx';
 import {
 	BARSICON,
-	CIRCLEDASHED,
 	DOLLAR,
 	ELLIPSIS,
 	FILETEXT,
@@ -269,8 +268,8 @@ function App() {
 						projectsOpen ? 'left-2' : '-left-full'
 					}`}
 				>
-					<div className='flex items-center justify-between mb-2'>
-						<p className='my-3 text-start pl-2 font-medium text-gray-700'>
+					<div className='flex items-center justify-between mb-3'>
+						<p className='text-start pl-1 font-medium text-gray-700'>
 							PROJECTS
 						</p>
 						<div className='flex items-center gap-1'>
@@ -439,7 +438,9 @@ function App() {
 								}
 							})
 						) : (
-							<div className='text-2xl'>Select a project to see its notes</div>
+							<div className='text-2xl my-8'>
+								Select a project to see its notes
+							</div>
 						)}
 					</section>
 

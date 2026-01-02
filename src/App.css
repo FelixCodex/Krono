@@ -1,5 +1,6 @@
 :root {
 	--bg-f: #faf8f5;
+	--bg-f2: #f7efe7;
 }
 
 #root {
@@ -22,7 +23,7 @@
 
 .bg-dotted-back {
 	background: none;
-	background-color: var(--bg-f); /* Color de fondo */
+	background-color: var(--bg-f2); /* Color de fondo */
 	background-size: 40px 40px; /* Tamaño del patrón */
 	background-image: radial-gradient(
 		circle,
