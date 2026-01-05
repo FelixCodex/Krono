@@ -50,49 +50,45 @@ export const cardReducer = (state, action) => {
 			return newState;
 		}
 		case 'UPDATE_CARD_FROM_PROJECT': {
-			const { projectId, id, time } = actionPayload;
+			const { projectId, id, time, title, color, check } = actionPayload;
 			const projectIndex = state.findIndex(item => item.id == projectId);
 			const newState = structuredClone(state);
 			const cardIndex = newState[projectIndex].projectCards.findIndex(
 				item => item.id == id
 			);
-			newState[projectIndex].projectCards[cardIndex].dateinfo = time;
+			console.log(cardIndex);
+			if (cardIndex == -1) return state;
+
+			if (time) newState[projectIndex].projectCards[cardIndex].dateinfo = time;
+
+			if (title) newState[projectIndex].projectCards[cardIndex].title = title;
+
+			if (color) newState[projectIndex].projectCards[cardIndex].color = color;
+
+			if (check) {
+				const checked = newState[projectIndex].projectCards[cardIndex].checked;
+				newState[projectIndex].projectCards[cardIndex].checked =
+					checked == null ? true : !checked;
+			}
+
 			updateLocalStorage(newState);
 			return newState;
 		}
-		case 'RENAME_CARD_FROM_PROJECT': {
-			const { projectId, id, title } = actionPayload;
+		case 'UPDATE_PROJECT': {
+			const { projectId, title, color, check } = actionPayload;
 			const projectIndex = state.findIndex(item => item.id == projectId);
 			const newState = structuredClone(state);
-			const cardIndex = newState[projectIndex].projectCards.findIndex(
-				item => item.id == id
-			);
-			newState[projectIndex].projectCards[cardIndex].title = title;
-			updateLocalStorage(newState);
-			return newState;
-		}
-		case 'UPDATE_PROJECT_TITLE': {
-			const { projectId, title } = actionPayload;
-			const projectIndex = state.findIndex(item => item.id == projectId);
-			const newState = structuredClone(state);
-			newState[projectIndex].title = title;
-			updateLocalStorage(newState);
-			return newState;
-		}
-		case 'UPDATE_PROJECT_COLOR': {
-			const { projectId, color } = actionPayload;
-			const projectIndex = state.findIndex(item => item.id == projectId);
-			const newState = structuredClone(state);
-			newState[projectIndex].color = color;
-			updateLocalStorage(newState);
-			return newState;
-		}
-		case 'UPDATE_PROJECT_CHECKED': {
-			const { projectId } = actionPayload;
-			const projectIndex = state.findIndex(item => item.id == projectId);
-			const newState = structuredClone(state);
-			const checked = newState[projectIndex].checked;
-			newState[projectIndex].checked = checked == null ? true : !checked;
+			if (projectIndex == -1) return state;
+
+			if (title) newState[projectIndex].title = title;
+
+			if (color) newState[projectIndex].color = color;
+
+			if (check) {
+				const checked = newState[projectIndex].checked;
+				newState[projectIndex].checked = checked == null ? true : !checked;
+			}
+
 			updateLocalStorage(newState);
 			return newState;
 		}

@@ -1,5 +1,5 @@
 import './App.css';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useCard } from './hooks/useCard.jsx';
 import { useTimer } from './hooks/useTimer.jsx';
 import {
@@ -24,7 +24,9 @@ import {
 	handleToggleModal,
 	openModalWithPreset,
 } from './utils/utils.js';
-import { DEFAULT_COLOR } from './color.js';
+import { COLORS, DEFAULT_COLOR } from './color.js';
+
+const showCardFeeInitialValue = localStorage.getItem('showCardFee');
 
 function App() {
 	const cardId = useRef(0);
@@ -32,7 +34,7 @@ function App() {
 		cards,
 		addNewProject,
 		currentProject,
-		updateProjectTitle,
+		updateProject,
 		renameCardFromProject,
 		hourFee,
 		setHourFee,
@@ -43,6 +45,7 @@ function App() {
 	const [projectsOpen, setProjectsOpen] = useState(false);
 	const [moreOptionOpen, setMoreOptionOpen] = useState(false);
 	const [inputWrong, setInputWrong] = useState(false);
+	const [showCardFee, setShowCardFee] = useState(showCardFeeInitialValue);
 	const [mailReq, setMailReq] = useState({ success: null, loading: false });
 
 	const addProjectInput = useRef();
@@ -63,7 +66,7 @@ function App() {
 
 		switch (button.dataset.type) {
 			case 'edit': {
-				updateProjectTitle({
+				updateProject({
 					projectId: button.dataset.id,
 					title: addProjectInput.current.value,
 				});
@@ -158,6 +161,20 @@ function App() {
 		}
 	};
 
+	useEffect(() => {
+		const event = e => {
+			if (e.key == 'r') {
+				const showCardFeeValue = showCardFee;
+				setShowCardFee(!showCardFeeValue);
+				localStorage.setItem('showCardFee', !showCardFeeValue);
+			}
+		};
+		window.addEventListener('keydown', event);
+		return () => {
+			window.removeEventListener('keydown', event);
+		};
+	}, [showCardFee]);
+
 	const handleExportDataToFile = async () => {
 		const exportData = cards.map(c => {
 			const projectCards = c.projectCards.map(card => {
@@ -188,10 +205,12 @@ function App() {
 
 	const calculateTotalFee = () => {
 		if (!currentProjectCard) return '';
-		const totalTime = currentProjectCard.projectCards.reduce(
-			(sum, item) => sum + Number(item.dateinfo),
-			0
-		);
+		const totalTime = currentProjectCard.projectCards.reduce((sum, item) => {
+			if (!item.checked) {
+				return sum + Number(item.dateinfo);
+			}
+			return sum;
+		}, 0);
 		const feePerTime = (totalTime / 1000 / 60) * (hourFee / 60);
 		return feePerTime.toFixed(2);
 	};
@@ -205,19 +224,26 @@ function App() {
 		return totalTime;
 	};
 
-	const cardStyleColor =
-		currentProjectCard && currentProjectCard.color
-			? {
-					background: currentProjectCard.color.bg,
-					borderColor: currentProjectCard.color.border,
-			  }
-			: {
-					background: DEFAULT_COLOR.bg,
-					borderColor: DEFAULT_COLOR.border,
-			  };
+	const getStyleColor = (condition, color) => {
+		if (condition) {
+			return {
+				background: COLORS[color].bg,
+				borderColor: COLORS[color].border,
+			};
+		}
+		return {
+			background: DEFAULT_COLOR.bg,
+			borderColor: DEFAULT_COLOR.border,
+		};
+	};
+
+	const cardStyleColor = getStyleColor(
+		currentProjectCard && COLORS[currentProjectCard.color],
+		currentProjectCard.color
+	);
 
 	return (
-		<main className='bg-dotted-back w-full h-screen'>
+		<main className='bg-dotted-back w-full min-h-screen h-fit'>
 			<section
 				className='fixed left-0 top-0 z-[200] items-center justify-center w-full h-full bg-[#00000066]'
 				id='modalContainer'
@@ -373,59 +399,69 @@ function App() {
 						)}
 					</div>
 				</aside>
-				<main className='w-full md:w-4/5 xl:max-w-[52.5rem] flex gap-3 flex-col xl:mt-3 min-h-32 relative'>
-					<section
-						className='w-full flex gap-3 flex-col border rounded-xl relative p-3 justify-start'
-						style={cardStyleColor}
+				<main className='w-full md:w-4/5 xl:max-w-[64rem] flex gap-3 flex-col xl:mt-3 min-h-32 relative'>
+					<div
+						className='absolute flex justify-center left-3 -top-[3.125rem]'
+						style={currentProject ? { display: 'flex' } : { display: 'none' }}
 					>
-						<div
-							className='absolute flex justify-center left-3 -top-[3.0625rem]'
-							style={currentProject ? { display: 'flex' } : { display: 'none' }}
+						<p
+							className='relative inline my-1 text-3xl px-7 p-1 z-30 !border-b-transparent font-medium text-gray-800 rounded-t-2xl border'
+							style={{ ...cardStyleColor }}
 						>
-							<p
-								className='relative inline my-1 text-3xl px-7 p-1 z-30 !border-b-transparent font-medium text-gray-800 rounded-t-2xl border'
-								style={{ ...cardStyleColor }}
-							>
-								{currentProject ? (
-									cards.map(item => {
-										if (item.id == currentProject) {
-											return item.title;
-										}
-									})
-								) : (
-									<></>
-								)}
-							</p>
-						</div>
-						<div
-							className='absolute flex justify-center gap-1 right-3 -top-[3.4375rem]'
-							style={currentProject ? { display: 'flex' } : { display: 'none' }}
+							{currentProject ? (
+								cards.map(item => {
+									if (item.id == currentProject) {
+										return item.title;
+									}
+								})
+							) : (
+								<></>
+							)}
+						</p>
+					</div>
+					<div
+						className='absolute flex justify-center gap-1 right-3 -top-[3.0625rem]'
+						style={currentProject ? { display: 'flex' } : { display: 'none' }}
+					>
+						<p
+							className={`relative inline my-1 text-2xl px-6 py-2 rounded-t-2xl font-bold bg-gradient-to-r from-blue-600 to-sky-600 text-white border border-purple-500/30 border-b-transparent shadow-lg`}
 						>
-							<p
-								className={`relative inline my-1 text-2xl px-6 py-2 rounded-t-2xl font-bold bg-gradient-to-r from-blue-600 to-sky-600 text-white border border-purple-500/30 border-b-transparent shadow-lg`}
-							>
-								Total: {formatMillisToAdjustedHM(calculateTotalTime())}
-							</p>
-							<p
-								className={`relative inline my-1 text-2xl px-6 py-2 rounded-t-2xl font-bold ${
-									cards.find(c => currentProject == c.id)?.checked
-										? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white'
-										: 'bg-gradient-to-r from-rose-600 to-pink-600 text-white'
-								} border border-purple-500/30 border-b-transparent shadow-lg`}
-							>
-								${calculateTotalFee()}
-							</p>
-						</div>
-						{currentProject ? (
-							cards.map(item => {
-								if (item.id == currentProject) {
-									return item.projectCards.length > 0 ? (
+							Total: {formatMillisToAdjustedHM(calculateTotalTime())}
+						</p>
+						<p
+							className={`relative inline my-1 text-2xl px-6 py-2 rounded-t-2xl font-bold ${
+								cards.find(c => currentProject == c.id)?.checked
+									? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white'
+									: 'bg-gradient-to-r from-rose-600 to-pink-600 text-white'
+							} border border-purple-500/30 border-b-transparent shadow-lg`}
+						>
+							${calculateTotalFee()}
+						</p>
+					</div>
+
+					{currentProject ? (
+						cards.map(item => {
+							if (item.id != currentProject) return null;
+							const card = item.projectCards[0];
+							const cardStyleColor = getStyleColor(
+								card.color && COLORS[card.color],
+								card.color
+							);
+							return (
+								<section
+									key={`cs-${(cardId.current += 1)}`}
+									className='w-full flex gap-3 flex-col border rounded-xl relative p-3 justify-start'
+									style={cardStyleColor}
+								>
+									{item.projectCards.length > 0 ? (
 										<Card
 											key={`r-${(cardId.current += 1)}`}
-											id={item.projectCards[0].id}
-											projectColor={currentProjectCard.color}
-											title={item.projectCards[0].title}
-											dateinfo={item.projectCards[0].dateinfo}
+											id={card.id}
+											color={card.color}
+											title={card.title}
+											checked={card.checked}
+											showCardFee={showCardFee}
+											dateinfo={card.dateinfo}
 										></Card>
 									) : (
 										<div
@@ -434,41 +470,53 @@ function App() {
 										>
 											There are no notes in this project
 										</div>
-									);
-								}
-							})
-						) : (
-							<div className='text-2xl my-8'>
-								Select a project to see its notes
-							</div>
-						)}
-					</section>
-
-					{currentProject && currentProjectCard.projectCards.length > 1 ? (
+									)}
+								</section>
+							);
+						})
+					) : (
 						<section
+							key={`select-c`}
 							className='w-full flex gap-3 flex-col border rounded-xl relative p-3 justify-start'
 							style={cardStyleColor}
 						>
-							{cards.map(item => {
-								if (item.id == currentProject) {
-									return item.projectCards.length > 1
-										? item.projectCards.map(({ id, title, dateinfo }, i) => {
-												return i != 0 ? (
-													<Card
-														key={`r-${(cardId.current += 1)}`}
-														id={id}
-														projectColor={currentProjectCard.color}
-														title={title}
-														dateinfo={dateinfo}
-													></Card>
-												) : (
-													<></>
-												);
-										  })
-										: '';
-								}
-							})}
+							<div className='text-2xl my-8'>
+								Select a project to see its notes
+							</div>
 						</section>
+					)}
+
+					{currentProject && currentProjectCard.projectCards.length > 1 ? (
+						cards.map(item => {
+							if (item.id != currentProject) return null;
+							if (item.projectCards.length < 1) return null;
+							return item.projectCards.map(
+								({ id, title, dateinfo, color, checked }, i) => {
+									if (i == 0) return null;
+									const cardStyleColor = getStyleColor(
+										color && COLORS[color],
+										color
+									);
+									return (
+										<section
+											key={`cs-${(cardId.current += 1)}`}
+											className='w-full flex gap-3 flex-col border rounded-xl relative p-3 justify-start'
+											style={cardStyleColor}
+										>
+											<Card
+												key={`r-${(cardId.current += 1)}`}
+												id={id}
+												color={color}
+												title={title}
+												checked={checked}
+												showCardFee={showCardFee}
+												dateinfo={dateinfo}
+											></Card>
+										</section>
+									);
+								}
+							);
+						})
 					) : (
 						<></>
 					)}

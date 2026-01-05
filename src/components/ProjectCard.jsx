@@ -1,9 +1,11 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { CHECK, DROPLET, EDITICON, TRASHICON } from '../icons/icons.jsx';
 import { openModalWithPreset, showMessage } from '../utils/utils.js';
 import { useCard } from '../hooks/useCard.jsx';
 import { useState } from 'react';
 import { COLORS, DEFAULT_COLOR } from '../color.js';
+import { ColorSelector } from './ColorSelector.jsx';
 
 export function ProjectCard({
 	title,
@@ -19,8 +21,7 @@ export function ProjectCard({
 		setCurrentProject,
 		deleteProject,
 		activated,
-		updateProjectChecked,
-		updateProjectColor,
+		updateProject,
 	} = useCard();
 
 	const handleProjectClick = async () => {
@@ -47,15 +48,15 @@ export function ProjectCard({
 	};
 
 	const handleChangeColor = color => {
-		updateProjectColor({ projectId, color });
+		updateProject({ projectId, color });
 	};
 
 	return (
 		<div
 			className={`p-1 rounded-xl border cursor-pointer`}
 			style={
-				color
-					? { background: color.bg, borderColor: color.border }
+				color && COLORS[color]
+					? { background: COLORS[color].bg, borderColor: COLORS[color].border }
 					: { background: DEFAULT_COLOR.bg, borderColor: DEFAULT_COLOR.border }
 			}
 			onClick={handleProjectClick}
@@ -65,9 +66,11 @@ export function ProjectCard({
 					currentProject == projectId ? 'border-gray-400' : 'border-gray-300'
 				} ${colorModalOpen ? 'z-50' : 'z-10'} rounded-lg ${className}`}
 				style={
-					color && currentProject != projectId
-						? { borderColor: color.border }
-						: {}
+					color && COLORS[color]
+						? currentProject != projectId
+							? { borderColor: COLORS[color].border }
+							: { borderColor: COLORS[color].highlight }
+						: { borderColor: DEFAULT_COLOR.border }
 				}
 				id={projectId}
 			>
@@ -77,7 +80,7 @@ export function ProjectCard({
 						className='w-7 h-7 p-0 flex items-center justify-center'
 						onClick={e => {
 							e.stopPropagation();
-							updateProjectChecked({ projectId });
+							updateProject({ projectId, check: true });
 						}}
 					>
 						<CHECK
@@ -98,32 +101,18 @@ export function ProjectCard({
 								setColorModalOpen(!colorModalOpen);
 							}}
 							style={{
-								background: color ? color.bg : '#fff',
+								background: COLORS[color] ? COLORS[color].bg : '#fff',
+								borderColor: COLORS[color]
+									? COLORS[color].border
+									: DEFAULT_COLOR.border,
 							}}
 						>
 							<DROPLET className='w-5 h-5 p-0 flex items-center justify-center'></DROPLET>
 						</button>
-						<div
-							className={`${
-								colorModalOpen ? 'absolute' : 'hidden'
-							} w-32 top-[103%] p-2 -left-8 gap-1 flex flex-col border rounded-lg border-gray-300 bg-gray-50`}
-						>
-							<p className='text-sm text-start font-medium'>Colors</p>
-							<div className='flex flex-wrap gap-1'>
-								{COLORS.map((c, i) => {
-									return (
-										<ColorButton
-											key={i}
-											onClick={e => {
-												e.stopPropagation();
-												handleChangeColor(c);
-											}}
-											color={c}
-										/>
-									);
-								})}
-							</div>
-						</div>
+						<ColorSelector
+							modalOpen={colorModalOpen}
+							onClick={handleChangeColor}
+						/>
 					</div>
 					<button
 						className='w-7 h-7 p-0 flex items-center justify-center'
@@ -140,16 +129,5 @@ export function ProjectCard({
 				</div>
 			</div>
 		</div>
-	);
-}
-
-function ColorButton({ className, onClick, color }) {
-	return (
-		<button
-			data-color={color}
-			className={`w-6 h-6 p-0 flex items-center justify-center ${className}`}
-			style={{ background: color ? color.bg : '' }}
-			onClick={onClick}
-		></button>
 	);
 }

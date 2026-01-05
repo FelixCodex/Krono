@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useCard } from '../hooks/useCard.jsx';
 import {
 	convertTimeInMillisToHMS,
@@ -7,21 +7,31 @@ import {
 	openModalWithPreset,
 	showMessage,
 } from '../utils/utils.js';
-import { EDITICON, PLAYICON, TRASHICON } from '../icons/icons.jsx';
+import {
+	CHECK,
+	DROPLET,
+	EDITICON,
+	PLAYICON,
+	TRASHICON,
+} from '../icons/icons.jsx';
 import { useTimer } from '../hooks/useTimer.jsx';
 import { COLORS } from '../color.js';
+import { ColorSelector } from './ColorSelector.jsx';
 
 // eslint-disable-next-line react/prop-types
-export function Card({ title, dateinfo, id, projectColor }) {
+export function Card({ title, dateinfo, id, color, checked, showCardFee }) {
 	const {
 		removeCardFromProject,
 		currentProject,
 		repositionCardFromProject,
 		resumedId,
+		updateCardFromProject,
+		hourFee,
 	} = useCard();
 	const [cardId] = useState(id);
 	const { resumeClick } = useTimer();
 	const { activated } = useCard();
+	const [colorModalOpen, setColorModalOpen] = useState(false);
 
 	const handleClick = () => {
 		const confirmAsk = confirm('Quieres eliminar esta nota?');
@@ -91,15 +101,23 @@ export function Card({ title, dateinfo, id, projectColor }) {
 		e.currentTarget.style = 'border: 1px solid #d1d5db;';
 	};
 
+	const handleChangeColor = color => {
+		updateCardFromProject({ projectId: currentProject, id, color });
+	};
+
+	const calculateFee = useCallback((totalTime, hourFee) => {
+		return ((totalTime / 1000 / 60) * (hourFee / 60)).toFixed(2);
+	}, []);
+
 	return (
 		<div
 			className={`w-full card min-h-[6.25rem] p-3 h-32 flex items-center border bg-white ${
 				resumedId == id ? 'border-[#007bff]' : 'border-gray-300'
-			}  rounded-lg relative`}
+			} ${colorModalOpen ? 'z-50' : 'z-10'} rounded-lg relative`}
 			style={
-				projectColor && projectColor.border != COLORS[0].border
+				color && COLORS[color] && resumedId != id
 					? {
-							borderColor: projectColor.border,
+							borderColor: COLORS[color].border,
 					  }
 					: {}
 			}
@@ -123,27 +141,86 @@ export function Card({ title, dateinfo, id, projectColor }) {
 				<p className='w-fit text-xl md:text-2xl xl:text-3xl text-gray-600 font-medium'>
 					{formatDateToTimePassed(convertTimeInMillisToHMS(dateinfo))}
 				</p>
+				{showCardFee && (
+					<>
+						<div className='min-w-px border-l border-gray-300 h-10 mx-1'></div>
+						<p className='w-fit text-xl md:text-2xl xl:text-3xl text-gray-600 font-medium'>
+							${calculateFee(dateinfo, hourFee)}
+						</p>
+					</>
+				)}
 			</div>
 			<div className={`flex h-full gap-2`}>
 				<button
-					className={`w-full h-full flex items-center justify-center bg-[#007bff] text-white hover:text-white`}
+					className={`w-full h-full flex items-center justify-center bg-[#007bff] text-white  hover:text-white`}
 					onClick={handleResume}
 				>
 					<PLAYICON className='size-6'></PLAYICON>
 				</button>
-				<div className={`flex flex-col items-center gap-2`}>
-					<button
-						className='w-full h-full'
-						onClick={handleEdit}
-					>
-						<EDITICON className='size-6'></EDITICON>
-					</button>
-					<button
-						className='w-full h-full hover:text-red-500 hover:border-red-500'
-						onClick={handleClick}
-					>
-						<TRASHICON className='size-6'></TRASHICON>
-					</button>
+				<div className={`h-full flex-col flex items-center gap-2`}>
+					<div className='h-full flex items-center gap-2'>
+						<div
+							onClick={e => {
+								e.stopPropagation();
+							}}
+							className='relative cursor-default'
+						>
+							<button
+								className='w-full px-3 h-full flex items-center justify-center'
+								style={
+									color && COLORS[color]
+										? {
+												background: COLORS[color].bg,
+												borderColor: COLORS[color].border,
+										  }
+										: {}
+								}
+								onClick={() => {
+									setColorModalOpen(!colorModalOpen);
+								}}
+							>
+								<DROPLET className='size-6'></DROPLET>
+							</button>
+							<ColorSelector
+								modalOpen={colorModalOpen}
+								onClick={handleChangeColor}
+							/>
+						</div>
+						<button
+							className={`w-full px-3 h-full flex items-center justify-center ${
+								checked ? 'border-blue-500 bg-blue-200' : ''
+							}`}
+							onClick={e => {
+								e.stopPropagation();
+								updateCardFromProject({
+									projectId: currentProject,
+									id,
+									check: true,
+								});
+							}}
+						>
+							<CHECK
+								className={`size-6 ${
+									checked ? 'text-blue-500' : 'text-gray-300'
+								}`}
+							></CHECK>
+						</button>
+					</div>
+
+					<div className='h-full flex items-center gap-2'>
+						<button
+							className='w-full px-3 h-full'
+							onClick={handleEdit}
+						>
+							<EDITICON className='size-6'></EDITICON>
+						</button>
+						<button
+							className='w-full px-3 h-full hover:text-red-500 hover:border-red-500'
+							onClick={handleClick}
+						>
+							<TRASHICON className='size-6'></TRASHICON>
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>

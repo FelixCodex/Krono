@@ -52,27 +52,9 @@ function useCardReducer() {
 			payload: product,
 		});
 
-	const renameCardFromProject = product =>
+	const updateProject = product =>
 		dispatch({
-			type: 'RENAME_CARD_FROM_PROJECT',
-			payload: product,
-		});
-
-	const updateProjectTitle = product =>
-		dispatch({
-			type: 'UPDATE_PROJECT_TITLE',
-			payload: product,
-		});
-
-	const updateProjectChecked = product =>
-		dispatch({
-			type: 'UPDATE_PROJECT_CHECKED',
-			payload: product,
-		});
-
-	const updateProjectColor = product =>
-		dispatch({
-			type: 'UPDATE_PROJECT_COLOR',
+			type: 'UPDATE_PROJECT',
 			payload: product,
 		});
 
@@ -101,13 +83,11 @@ function useCardReducer() {
 	return {
 		state,
 		addNewProject,
-		updateProjectColor,
+		updateProject,
 		addCardToProject,
 		deleteProject,
 		removeCardFromProject,
 		updateCardFromProject,
-		updateProjectTitle,
-		renameCardFromProject,
 		repositionCardFromProject,
 		currentProject,
 		setCurrentProject,
@@ -121,7 +101,6 @@ function useCardReducer() {
 		setIntervalTimer,
 		hourFee,
 		setHourFee,
-		updateProjectChecked,
 		setMail,
 		mail,
 	};
@@ -129,13 +108,56 @@ function useCardReducer() {
 
 // eslint-disable-next-line react/prop-types
 export function CardProvider({ children }) {
-	const reducer = useCardReducer();
+	const {
+		state,
+		addNewProject,
+		updateProject,
+		addCardToProject,
+		deleteProject,
+		removeCardFromProject,
+		updateCardFromProject,
+		repositionCardFromProject,
+		currentProject,
+		setCurrentProject,
+		activated,
+		setActivated,
+		resumedId,
+		setResumedId,
+		initialTime,
+		setInitialTime,
+		intervalTimer,
+		setIntervalTimer,
+		hourFee,
+		setHourFee,
+		setMail,
+		mail,
+	} = useCardReducer();
 
 	return (
 		<CardContext.Provider
 			value={{
-				cards: reducer.state,
-				...reducer,
+				cards: state,
+				addNewProject,
+				updateProject,
+				addCardToProject,
+				deleteProject,
+				removeCardFromProject,
+				updateCardFromProject,
+				repositionCardFromProject,
+				currentProject,
+				setCurrentProject,
+				activated,
+				setActivated,
+				resumedId,
+				setResumedId,
+				initialTime,
+				setInitialTime,
+				intervalTimer,
+				setIntervalTimer,
+				hourFee,
+				setHourFee,
+				setMail,
+				mail,
 			}}
 		>
 			{children}
