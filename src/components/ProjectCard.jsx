@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { CHECK, DROPLET, EDITICON, TRASHICON } from '../icons/icons.jsx';
 import { openModalWithPreset, showMessage } from '../utils/utils.js';
 import { useCard } from '../hooks/useCard.jsx';
 import { useState } from 'react';
 import { COLORS, DEFAULT_COLOR } from '../color.js';
 import { ColorSelector } from './ColorSelector.jsx';
+import { Check, Droplet, Edit, Trash2 } from 'lucide-react';
 
 export function ProjectCard({
 	title,
@@ -25,7 +25,7 @@ export function ProjectCard({
 	} = useCard();
 
 	const handleProjectClick = async () => {
-		if (activated == true || activated == null) {
+		if (activated.current == true || activated.current == 'resumed') {
 			showMessage('Hay un cronometro activo!');
 			return;
 		}
@@ -83,11 +83,11 @@ export function ProjectCard({
 							updateProject({ projectId, check: true });
 						}}
 					>
-						<CHECK
+						<Check
 							className={`w-5 h-5 ${
 								checked ? 'text-gray-800' : 'text-gray-300'
 							}`}
-						></CHECK>
+						/>
 					</button>
 					<div
 						onClick={e => {
@@ -107,7 +107,7 @@ export function ProjectCard({
 									: DEFAULT_COLOR.border,
 							}}
 						>
-							<DROPLET className='w-5 h-5 p-0 flex items-center justify-center'></DROPLET>
+							<Droplet className='w-5 h-5 p-0 flex items-center justify-center' />
 						</button>
 						<ColorSelector
 							modalOpen={colorModalOpen}
@@ -118,13 +118,13 @@ export function ProjectCard({
 						className='w-7 h-7 p-0 flex items-center justify-center'
 						onClick={handleEditClick}
 					>
-						<EDITICON className='w-5 h-5'></EDITICON>
+						<Edit className='w-5 h-5' />
 					</button>
 					<button
 						className='w-7 h-7 p-0 flex items-center justify-center'
 						onClick={handleDeleteClick}
 					>
-						<TRASHICON className='w-5 h-5'></TRASHICON>
+						<Trash2 className='w-5 h-5' />
 					</button>
 				</div>
 			</div>

@@ -56,7 +56,6 @@ export const cardReducer = (state, action) => {
 			const cardIndex = newState[projectIndex].projectCards.findIndex(
 				item => item.id == id
 			);
-			console.log(cardIndex);
 			if (cardIndex == -1) return state;
 
 			if (time) newState[projectIndex].projectCards[cardIndex].dateinfo = time;

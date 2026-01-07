@@ -1,184 +1,230 @@
+import { useCallback } from 'react';
 import {
 	counterInput,
 	counterText,
-	formatNumber,
-	oneDay,
 	oneHour,
 	oneMin,
-	setCounterInput,
+	oneSec,
 	showMessage,
 } from '../utils/utils.js';
 import { useCard } from './useCard.jsx';
 
-let intervalNextSaveTime = 0;
-let intervalNextSaveTimePassed = 0;
-let intervalNextSaveResumed = false;
-let intervalNextSaveResumedId = 0;
+// Constantes
+
+// Utilidades
+const formatNumber = num => String(num).padStart(2, '0');
+
+const formatTimeToCounterText = time => {
+	const hours = Math.floor(time / oneHour);
+	const minutes = Math.floor((time % oneHour) / oneMin);
+	const seconds = Math.floor((time % oneMin) / oneSec);
+
+	return `${formatNumber(hours)}:${formatNumber(minutes)}:${formatNumber(
+		seconds
+	)}`;
+};
+
+const generateId = () => Math.floor(Math.random() * 10000);
 
 export function useTimer() {
 	const {
 		addCardToProject,
 		updateCardFromProject,
 		activated,
-		setActivated,
 		resumedId,
 		setResumedId,
-		initialTime,
-		setInitialTime,
-		intervalTimer,
-		setIntervalTimer,
 		currentProject,
+		setCountDownTime,
+		countDownActivated,
+		setCountDownActivated,
+		timerStateRef,
 	} = useCard();
 
-	const saveTimer = () => {
-		// console.log(intervalNextSaveResumed);
-		if (intervalNextSaveResumed == false) {
-			// console.log('false');
-			const actualDate = new Date();
-			const time = actualDate.getTime() - intervalNextSaveTimePassed;
+	const getCounterElements = useCallback(() => {
+		return {
+			input: counterInput(),
+			text: counterText(),
+		};
+	}, []);
 
-			const title = counterInput().value;
-			const id = Math.floor(Math.random() * 10000);
+	const resetCounterUI = useCallback(() => {
+		const { input, text } = getCounterElements();
+		input.value = '';
+		input.disabled = false;
+		text.textContent = '00:00:00';
+	}, [getCounterElements]);
 
+	const resetTimerState = useCallback(() => {
+		timerStateRef.current = {
+			isResumed: false,
+			resumedCardId: 0,
+			startTimestamp: 0,
+		};
+	}, [timerStateRef]);
+
+	const saveTimer = useCallback(() => {
+		const now = Date.now();
+		const elapsed = now - timerStateRef.current.startTimestamp;
+		const { input } = getCounterElements();
+		const title = input.value;
+
+		if (!timerStateRef.current.isResumed) {
+			const id = generateId();
 			addCardToProject({
 				projectId: currentProject,
-				cardData: { id, title, dateinfo: time },
+				cardData: { id, title, dateinfo: elapsed },
 			});
-			intervalNextSaveResumed = true;
-			intervalNextSaveResumedId = id;
-		} else if (intervalNextSaveResumed == true) {
-			const actualDate = new Date().getTime();
-			const time = actualDate - intervalNextSaveTimePassed;
-
+			timerStateRef.current.isResumed = true;
+			timerStateRef.current.resumedCardId = id;
+		} else {
 			updateCardFromProject({
 				projectId: currentProject,
-				id: intervalNextSaveResumedId,
-				time,
+				id: timerStateRef.current.resumedCardId,
+				time: elapsed,
 			});
 		}
-	};
+	}, [
+		timerStateRef,
+		getCounterElements,
+		addCardToProject,
+		currentProject,
+		updateCardFromProject,
+	]);
 
-	const formatTimeToCounterText = time => {
-		let hours = Math.floor((time % oneDay) / oneHour);
-		let minutes = Math.floor((time % oneHour) / oneMin);
-		let segs = Math.floor((time % oneMin) / 1000);
+	const stopCounting = useCallback(() => {
+		activated.current = false;
 
-		hours = formatNumber(hours);
-		minutes = formatNumber(minutes);
-		segs = formatNumber(segs);
-		return `${hours}:${minutes}:${segs}`;
-	};
+		saveTimer();
+		setResumedId(null);
 
-	const handleInterval = initialTime => {
-		const actualDate = new Date();
-		const time = actualDate.getTime() - initialTime;
+		resetCounterUI();
+		resetTimerState();
+	}, [activated, saveTimer, setResumedId, resetCounterUI, resetTimerState]);
 
-		const timeText = formatTimeToCounterText(time);
+	const handleInterval = useCallback(
+		startTime => {
+			if (activated.current == false) return;
 
-		if (time > intervalNextSaveTime) {
-			saveTimer();
-			intervalNextSaveTime = time + 2000;
-			// console.log('GUARDADO');
-		}
+			const now = Date.now();
+			const elapsed = now - startTime;
+			const { text } = getCounterElements();
 
-		counterText().textContent = timeText;
-	};
-
-	const timerClick = () => {
-		if (counterInput().value == '') {
-			showMessage('Pon un titulo');
-			return;
-		}
-
-		if (currentProject == null) {
-			showMessage('Selecciona un projecto');
-			return;
-		}
-
-		if (activated) {
-			// console.log('activated true');
-			const actualDate = new Date();
-			const time = actualDate.getTime() - initialTime;
-
-			const title = counterInput().value;
-			const id = Math.floor(Math.random() * 10000);
-
-			setInitialTime(0);
-			setActivated(false);
-			clearInterval(intervalTimer);
-
-			if (!intervalNextSaveResumed) {
-				addCardToProject({
-					projectId: currentProject,
-					cardData: { id, title, dateinfo: time },
-				});
-			} else {
-				updateCardFromProject({
-					projectId: currentProject,
-					id: intervalNextSaveResumedId,
-					time,
+			if (countDownActivated.current) {
+				setCountDownTime(prev => {
+					const updated = prev - oneSec;
+					if (updated <= 0) {
+						setCountDownActivated(false);
+						stopCounting();
+						const sound = new Audio('/countdown_stop.wav');
+						sound.play();
+						return 0;
+					}
+					return updated;
 				});
 			}
 
-			setCounterInput('');
-			counterText().textContent = `00:00:00`;
-			counterInput().disabled = false;
-			intervalNextSaveResumedId = 0;
-			intervalNextSaveResumed = false;
-			intervalNextSaveTimePassed = 0;
-			intervalNextSaveTime = 0;
-		} else if (activated == null) {
-			// console.log('activated null');
-			const actualDate = new Date();
-			const time = actualDate.getTime() - initialTime;
+			text.textContent = formatTimeToCounterText(elapsed);
+
+			saveTimer();
+
+			setTimeout(() => handleInterval(startTime), oneSec);
+		},
+		[
+			activated,
+			getCounterElements,
+			countDownActivated,
+			setCountDownActivated,
+			setCountDownTime,
+			saveTimer,
+		]
+	);
+
+	const timerClick = useCallback(() => {
+		const { input } = getCounterElements();
+
+		if (!currentProject) {
+			showMessage('Selecciona un proyecto');
+			return;
+		}
+
+		// Timer activo - detener
+		if (activated.current === true) {
+			stopCounting();
+			return;
+		}
+
+		// Timer resumido - detener
+		else if (activated.current === 'resumed') {
+			const now = Date.now();
+			const elapsed = now - timerStateRef.current.startTimestamp;
 
 			updateCardFromProject({
 				projectId: currentProject,
 				id: resumedId,
-				time,
+				time: elapsed,
 			});
 
-			setInitialTime(0);
-			setActivated(false);
-			clearInterval(intervalTimer);
+			activated.current = false;
 			setResumedId(null);
 
-			counterInput().value = '';
-			counterText().textContent = `00:00:00`;
-			counterInput().disabled = false;
-			intervalNextSaveResumedId = 0;
-			intervalNextSaveResumed = false;
-			intervalNextSaveTimePassed = 0;
-			intervalNextSaveTime = 0;
-		} else if (activated == false) {
-			// console.log('activated false');
-			const date = new Date().getTime();
-			setInitialTime(date);
-			setActivated(true);
-			counterInput().disabled = true;
-			intervalNextSaveResumed = false;
-			intervalNextSaveTimePassed = date;
-			setIntervalTimer(setInterval(() => handleInterval(date), 1000));
+			resetCounterUI();
+			resetTimerState();
+			return;
 		}
-	};
 
-	const resumeClick = ({ time, id, title }) => {
-		const date = new Date().getTime() - time;
-		setInitialTime(date);
-		setActivated(null);
-		counterInput().disabled = true;
-		counterInput().value = title;
-		const timeText = formatTimeToCounterText(time);
-		counterText().textContent = timeText;
-		setResumedId(id);
-		intervalNextSaveResumed = true;
-		intervalNextSaveResumedId = id;
-		intervalNextSaveTimePassed = date;
-		setIntervalTimer(setInterval(() => handleInterval(date), 1000));
-	};
+		// Timer inactivo - iniciar
+		else if (activated.current === false) {
+			if (!input.value.trim()) {
+				showMessage('Pon un título');
+				return;
+			}
+
+			const now = Date.now();
+			activated.current = true;
+			input.disabled = true;
+
+			timerStateRef.current.isResumed = false;
+			timerStateRef.current.startTimestamp = now;
+
+			setTimeout(() => handleInterval(now), oneSec);
+		}
+	}, [
+		activated,
+		currentProject,
+		getCounterElements,
+		handleInterval,
+		resetCounterUI,
+		resetTimerState,
+		resumedId,
+		setResumedId,
+		stopCounting,
+		timerStateRef,
+		updateCardFromProject,
+	]);
+
+	const resumeClick = useCallback(
+		({ time, id, title }) => {
+			const { input, text } = getCounterElements();
+			const now = Date.now();
+			const startTime = now - time;
+
+			activated.current = 'resumed';
+			setResumedId(id);
+
+			input.disabled = true;
+			input.value = title;
+			text.textContent = formatTimeToCounterText(time);
+
+			timerStateRef.current.isResumed = true;
+			timerStateRef.current.resumedCardId = id;
+			timerStateRef.current.startTimestamp = startTime;
+
+			setTimeout(() => handleInterval(startTime), oneSec);
+		},
+		[getCounterElements, activated, setResumedId, timerStateRef, handleInterval]
+	);
 
 	return {
-		activated,
 		timerClick,
 		resumeClick,
 	};

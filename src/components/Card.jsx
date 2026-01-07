@@ -7,16 +7,10 @@ import {
 	openModalWithPreset,
 	showMessage,
 } from '../utils/utils.js';
-import {
-	CHECK,
-	DROPLET,
-	EDITICON,
-	PLAYICON,
-	TRASHICON,
-} from '../icons/icons.jsx';
 import { useTimer } from '../hooks/useTimer.jsx';
 import { COLORS } from '../color.js';
 import { ColorSelector } from './ColorSelector.jsx';
+import { Check, Droplet, Edit, Play, Trash2 } from 'lucide-react';
 
 // eslint-disable-next-line react/prop-types
 export function Card({ title, dateinfo, id, color, checked, showCardFee }) {
@@ -40,7 +34,7 @@ export function Card({ title, dateinfo, id, color, checked, showCardFee }) {
 	};
 
 	const handleResume = () => {
-		if (activated == true || activated == null) {
+		if (activated.current == true || activated.current == 'resumed') {
 			showMessage('Hay un cronometro activo!');
 			return;
 		}
@@ -155,7 +149,10 @@ export function Card({ title, dateinfo, id, color, checked, showCardFee }) {
 					className={`w-full h-full flex items-center justify-center bg-[#007bff] text-white  hover:text-white`}
 					onClick={handleResume}
 				>
-					<PLAYICON className='size-6'></PLAYICON>
+					<Play
+						className='size-6'
+						fill='currentColor'
+					/>
 				</button>
 				<div className={`h-full flex-col flex items-center gap-2`}>
 					<div className='h-full flex items-center gap-2'>
@@ -179,7 +176,7 @@ export function Card({ title, dateinfo, id, color, checked, showCardFee }) {
 									setColorModalOpen(!colorModalOpen);
 								}}
 							>
-								<DROPLET className='size-6'></DROPLET>
+								<Droplet className='size-6' />
 							</button>
 							<ColorSelector
 								modalOpen={colorModalOpen}
@@ -199,11 +196,11 @@ export function Card({ title, dateinfo, id, color, checked, showCardFee }) {
 								});
 							}}
 						>
-							<CHECK
+							<Check
 								className={`size-6 ${
 									checked ? 'text-blue-500' : 'text-gray-300'
 								}`}
-							></CHECK>
+							/>
 						</button>
 					</div>
 
@@ -212,13 +209,13 @@ export function Card({ title, dateinfo, id, color, checked, showCardFee }) {
 							className='w-full px-3 h-full'
 							onClick={handleEdit}
 						>
-							<EDITICON className='size-6'></EDITICON>
+							<Edit className='size-6' />
 						</button>
 						<button
 							className='w-full px-3 h-full hover:text-red-500 hover:border-red-500'
 							onClick={handleClick}
 						>
-							<TRASHICON className='size-6'></TRASHICON>
+							<Trash2 className='size-6' />
 						</button>
 					</div>
 				</div>

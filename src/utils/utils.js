@@ -1,6 +1,7 @@
-export const oneDay = 24 * 60 * 60 * 1000;
-export const oneHour = 60 * 60 * 1000;
-export const oneMin = 60 * 1000;
+export const oneSec = 1000;
+export const oneMin = 60 * oneSec;
+export const oneHour = 60 * oneMin;
+export const oneDay = 24 * oneHour;
 
 export function formatNumber(number) {
 	if (number < 10) {

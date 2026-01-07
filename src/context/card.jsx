@@ -1,4 +1,4 @@
-import { createContext, useReducer, useState } from 'react';
+import { createContext, useReducer, useRef, useState } from 'react';
 import { cardInitialState, cardReducer } from '../reducers/card.js';
 
 export const hourFeeInitialState = localStorage.getItem('hourFee') || 0;
@@ -15,12 +15,33 @@ function useCardReducer() {
 	const [currentProject, setCurrentProjectValue] = useState(
 		currentProjectInitialState
 	);
-	const [activated, setActivated] = useState(false);
 	const [resumedId, setResumedId] = useState(null);
 	const [initialTime, setInitialTime] = useState(0);
 	const [intervalTimer, setIntervalTimer] = useState(null);
 	const [hourFee, setHourFeeValue] = useState(hourFeeInitialState);
 	const [mail, setMailValue] = useState(mailInitialState);
+	const [countDownTime, setCountDownTime] = useState(0);
+
+	const countDownActivated = useRef(false);
+	const [countDownActivatedState, setCountDownActivatedState] = useState(false);
+
+	// Keep a mutable ref for timer logic and a state value to trigger UI updates.
+	const setCountDownActivated = value => {
+		if (typeof value === 'boolean') {
+			countDownActivated.current = value;
+			setCountDownActivatedState(value);
+		} else {
+			countDownActivated.current = !countDownActivated.current;
+			setCountDownActivatedState(countDownActivated.current);
+		}
+	};
+
+	const activated = useRef(false);
+	const timerStateRef = useRef({
+		isResumed: false,
+		resumedCardId: 0,
+		startTimestamp: 0,
+	});
 
 	const addNewProject = product =>
 		dispatch({
@@ -75,7 +96,6 @@ function useCardReducer() {
 	};
 
 	const setMail = value => {
-		console.log(value);
 		setMailValue(value);
 		localStorage.setItem('mailToSend', value);
 	};
@@ -92,7 +112,6 @@ function useCardReducer() {
 		currentProject,
 		setCurrentProject,
 		activated,
-		setActivated,
 		resumedId,
 		setResumedId,
 		initialTime,
@@ -103,61 +122,26 @@ function useCardReducer() {
 		setHourFee,
 		setMail,
 		mail,
+		countDownTime,
+		setCountDownTime,
+		countDownActivated,
+		// state to trigger UI updates when count down is toggled
+		countDownActivatedState,
+		// setter that keeps ref and state in sync
+		setCountDownActivated,
+		timerStateRef,
 	};
 }
 
 // eslint-disable-next-line react/prop-types
 export function CardProvider({ children }) {
-	const {
-		state,
-		addNewProject,
-		updateProject,
-		addCardToProject,
-		deleteProject,
-		removeCardFromProject,
-		updateCardFromProject,
-		repositionCardFromProject,
-		currentProject,
-		setCurrentProject,
-		activated,
-		setActivated,
-		resumedId,
-		setResumedId,
-		initialTime,
-		setInitialTime,
-		intervalTimer,
-		setIntervalTimer,
-		hourFee,
-		setHourFee,
-		setMail,
-		mail,
-	} = useCardReducer();
+	const reducer = useCardReducer();
 
 	return (
 		<CardContext.Provider
 			value={{
-				cards: state,
-				addNewProject,
-				updateProject,
-				addCardToProject,
-				deleteProject,
-				removeCardFromProject,
-				updateCardFromProject,
-				repositionCardFromProject,
-				currentProject,
-				setCurrentProject,
-				activated,
-				setActivated,
-				resumedId,
-				setResumedId,
-				initialTime,
-				setInitialTime,
-				intervalTimer,
-				setIntervalTimer,
-				hourFee,
-				setHourFee,
-				setMail,
-				mail,
+				cards: reducer.state,
+				...reducer,
 			}}
 		>
 			{children}

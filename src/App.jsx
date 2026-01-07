@@ -1,21 +1,9 @@
+/* eslint-disable react/prop-types */
 import './App.css';
 import { useEffect, useRef, useState } from 'react';
 import { useCard } from './hooks/useCard.jsx';
 import { useTimer } from './hooks/useTimer.jsx';
-import {
-	BARSICON,
-	DOLLAR,
-	ELLIPSIS,
-	FILETEXT,
-	MAIL,
-	MAILCHECK,
-	MAILLOADING,
-	MAILPLUS,
-	MAILX,
-	PANELLEFT,
-	PLUSICON,
-	XICON,
-} from './icons/icons.jsx';
+import { BarsIcon, MailLoading } from './icons/icons.jsx';
 import { ProjectCard } from './components/ProjectCard.jsx';
 import { Card } from './components/Card.jsx';
 import {
@@ -25,6 +13,20 @@ import {
 	openModalWithPreset,
 } from './utils/utils.js';
 import { COLORS, DEFAULT_COLOR } from './color.js';
+import { CountDownTimer } from './components/CountDownTimer.jsx';
+import {
+	ClockFading,
+	DollarSign,
+	Ellipsis,
+	FileText,
+	Mail,
+	MailCheck,
+	MailPlus,
+	MailX,
+	PanelLeft,
+	Plus,
+	X,
+} from 'lucide-react';
 
 const showCardFeeInitialValue = localStorage.getItem('showCardFee');
 
@@ -40,15 +42,25 @@ function App() {
 		setHourFee,
 		mail,
 		setMail,
+		activated,
+		countDownActivatedState,
+		setCountDownActivated,
+		setCountDownTime,
+		countDownTime,
 	} = useCard();
-	const { activated, timerClick } = useTimer();
+	const { timerClick } = useTimer();
 	const [projectsOpen, setProjectsOpen] = useState(false);
 	const [moreOptionOpen, setMoreOptionOpen] = useState(false);
+	const [countDownOpen, setCountDownOpen] = useState(false);
 	const [inputWrong, setInputWrong] = useState(false);
 	const [showCardFee, setShowCardFee] = useState(showCardFeeInitialValue);
 	const [mailReq, setMailReq] = useState({ success: null, loading: false });
 
 	const addProjectInput = useRef();
+
+	useEffect(() => {
+		console.log(countDownActivatedState);
+	}, [countDownActivatedState]);
 
 	const handleModal = () => {
 		openModalWithPreset({ type: 'add' });
@@ -283,12 +295,18 @@ function App() {
 				</div>
 			</section>
 			<button
-				className='w-16 h-14 z-50 m-3 flex xl:hidden items-center justify-center text-gray-800 border border-gray-300'
+				className='w-16 h-14 z-50 fixed top-3 left-3 xl:hidden items-center justify-center text-gray-800 border border-gray-300'
 				onClick={() => setProjectsOpen(true)}
 			>
-				<BARSICON></BARSICON>
+				<BarsIcon />
 			</button>
-			<section className='flex flex-col-reverse xl:flex-row w-full gap-16 xl:gap-5 justify-center items-center relative xl:items-start pt-4 xl:pt-20 px-4 2xl:px-10 pb-8'>
+			<button
+				className='w-16 h-14 z-50 fixed top-3 right-3 xl:hidden items-center justify-center text-gray-800 border border-gray-300'
+				onClick={() => setCountDownOpen(!countDownOpen)}
+			>
+				<ClockFading />
+			</button>
+			<section className='flex flex-col-reverse xl:flex-row w-full gap-16 xl:gap-5 justify-center items-center relative xl:items-start pt-20 pb-8'>
 				<aside
 					className={`w-[calc(100%-1rem)] xl:w-96 fixed xl:sticky xl:mt-3 top-3 xl:left-auto min-h-80 h-[70vh] z-[100] transition-[left] duration-300  bg-gray-50 border border-gray-300 rounded-xl text-xl p-3 flex flex-col ${
 						projectsOpen ? 'left-2' : '-left-full'
@@ -305,13 +323,13 @@ function App() {
 								title={`Export Data to Mail${mail ? ` (${mail})` : ''}`}
 							>
 								{mailReq.loading ? (
-									<MAILLOADING className={'size-5'}></MAILLOADING>
+									<MailLoading className={'size-5'} />
 								) : mailReq.success == null ? (
-									<MAIL className={'size-5'}></MAIL>
+									<Mail className={'size-5'} />
 								) : mailReq.success == true ? (
-									<MAILCHECK className={'size-5'}></MAILCHECK>
+									<MailCheck className={'size-5'} />
 								) : (
-									<MAILX className={'size-5'}></MAILX>
+									<MailX className={'size-5'} />
 								)}
 							</button>
 							<button
@@ -319,14 +337,14 @@ function App() {
 								onClick={handleExportDataToFile}
 								title='Export Data to File'
 							>
-								<FILETEXT className={'size-5'}></FILETEXT>
+								<FileText className={'size-5'} />
 							</button>
 							<button
 								className='w-11 h-11 z-50 p-0 flex items-center justify-center'
 								onClick={handleModal}
 								title='Add Project'
 							>
-								<PLUSICON className={'size-6'}></PLUSICON>
+								<Plus className={'size-6'} />
 							</button>
 							<div className={`relative z-[150] flex justify-center`}>
 								<button
@@ -337,9 +355,9 @@ function App() {
 									title='Add Project'
 								>
 									{moreOptionOpen ? (
-										<XICON className={'size-6'}></XICON>
+										<X className={'size-6'} />
 									) : (
-										<ELLIPSIS className={'size-8'}></ELLIPSIS>
+										<Ellipsis className={'size-8'} />
 									)}
 								</button>
 								<div
@@ -355,7 +373,7 @@ function App() {
 										}}
 										title='Set Fee'
 									>
-										<DOLLAR className={'size-5'}></DOLLAR>
+										<DollarSign className={'size-5'}></DollarSign>
 										<span className='text-nowrap font-medium'>Set Fee</span>
 									</button>
 									<button
@@ -366,7 +384,7 @@ function App() {
 										}}
 										title={`Set Mail to Export Data${mail ? ` (${mail})` : ''}`}
 									>
-										<MAILPLUS className={'size-5'}></MAILPLUS>
+										<MailPlus className={'size-5'} />
 										<span className='text-nowrap font-medium'>Set Mail</span>
 									</button>
 								</div>
@@ -376,7 +394,7 @@ function App() {
 								onClick={() => setProjectsOpen(false)}
 								title='Close'
 							>
-								<PANELLEFT className={'size-6'}></PANELLEFT>
+								<PanelLeft className={'size-6'}></PanelLeft>
 							</button>
 						</div>
 					</div>
@@ -399,7 +417,7 @@ function App() {
 						)}
 					</div>
 				</aside>
-				<main className='w-full md:w-4/5 xl:max-w-[64rem] flex gap-3 flex-col xl:mt-3 min-h-32 relative'>
+				<main className='w-full md:w-4/5 xl:max-w-[64rem] min-w-0 flex gap-3 flex-col xl:mt-3 min-h-32 relative'>
 					<div
 						className='absolute flex justify-center left-3 -top-[3.125rem]'
 						style={currentProject ? { display: 'flex' } : { display: 'none' }}
@@ -443,8 +461,22 @@ function App() {
 						cards.map(item => {
 							if (item.id != currentProject) return null;
 							const card = item.projectCards[0];
+							if (!card)
+								return (
+									<section
+										key={`cs-${(cardId.current += 1)}`}
+										className='w-full flex gap-3 flex-col border rounded-xl relative p-3 justify-start bg-gray-50 border-gray-300'
+									>
+										<div
+											key='no-notes'
+											className='text-2xl my-8'
+										>
+											There are no notes in this project
+										</div>
+									</section>
+								);
 							const cardStyleColor = getStyleColor(
-								card.color && COLORS[card.color],
+								card && card.color && COLORS[card.color],
 								card.color
 							);
 							return (
@@ -521,33 +553,92 @@ function App() {
 						<></>
 					)}
 				</main>
-				<aside className='w-full md:w-4/5 xl:w-96 border border-gray-300 bg-gray-50 rounded-xl relative xl:sticky xl:top-3 xl:mt-3 text-xl p-3 py-7 gap-7 flex flex-col items-center '>
-					<input
-						type='text'
-						placeholder='¿What are you working on?'
-						className='w-11/12 mb-3  rounded-lg bg-gray-100 border border-gray-300 p-3 px-4 text-2xl font-medium cursor-pointer'
-						id='counterInput'
-					/>
-					<p
-						className='absolute top-24 '
-						id='message-log'
-					></p>
-					<p
-						className={`font-medium text-5xl  ${
-							activated == true || activated == null
-								? 'text-red-600'
-								: 'text-gray-800'
-						}`}
-						id='counterText'
-					>
-						00:00:00
-					</p>
-					<button
-						onClick={timerClick}
-						className='w-56 h-16 font-medium text-2xl p-3 bg-[#007bff] text-white hover:text-white'
-					>
-						{activated == true || activated == null ? 'Stop' : 'Start'}
-					</button>
+
+				<aside className='w-full md:w-4/5 xl:w-96 relative xl:sticky xl:top-3 xl:mt-3 text-xl flex flex-col items-center justify-center gap-4'>
+					<div className='w-full p-3 py-7 gap-7 flex flex-col items-center relative border border-gray-300 bg-gray-50 rounded-xl'>
+						<input
+							type='text'
+							placeholder='¿What are you working on?'
+							className='w-11/12  rounded-lg bg-gray-100 border border-gray-300 p-3 px-4 text-2xl font-medium cursor-pointer'
+							id='counterInput'
+						/>
+						<p
+							className='absolute top-24 '
+							id='message-log'
+						></p>
+						<p
+							className={`font-medium my-3 text-5xl  ${
+								activated.current == true || activated.current == 'resumed'
+									? 'text-red-600'
+									: 'text-gray-800'
+							}`}
+							id='counterText'
+						>
+							00:00:00
+						</p>
+						<button
+							onClick={timerClick}
+							className='w-56 h-16 font-medium text-2xl p-3 bg-[#007bff] text-white hover:text-white'
+						>
+							{activated.current == true || activated.current == 'resumed'
+								? 'Stop'
+								: 'Start'}
+						</button>
+					</div>
+					{countDownOpen ? (
+						<div className='w-full relative p-3 py-7 gap-7 flex flex-col items-center bg-gray-50 border border-gray-300 rounded-xl'>
+							<button
+								className='absolute top-1 right-1 w-12 h-12 bg-gray-50 border-transparent text-gray-400 flex items-center justify-center p-0'
+								onClick={() => {
+									if (!countDownActivatedState) setCountDownOpen(false);
+								}}
+							>
+								<X />
+							</button>
+							<p className={`font-bold text-gray-800 text-4xl`}>Count Down</p>
+							<div
+								className={`w-full flex items-center justify-center gap-1 ${
+									countDownActivatedState ? 'text-[#007bff]' : ' text-gray-700'
+								}`}
+							>
+								<CountDownTimer type='hour' />
+								<span className='font-medium text-5xl'>:</span>
+								<CountDownTimer type='min' />
+								<span className='font-medium text-5xl'>:</span>
+								<CountDownTimer type='sec' />
+							</div>
+							<div className='flex items-center justify-center gap-1'>
+								<button
+									onClick={() => {
+										if (!countDownTime <= 0) {
+											setCountDownActivated();
+										}
+									}}
+									className='w-40 h-16 font-medium text-2xl p-3 select-none bg-[#007bff] text-white hover:text-white'
+								>
+									{countDownActivatedState ? 'Stop' : 'Set'}
+								</button>
+								<button
+									className='w-28 h-16 font-medium text-2xl p-3 select-none bg-[#007bff] text-white hover:text-white'
+									onClick={() => {
+										setCountDownTime(0);
+										setCountDownActivated(false);
+									}}
+								>
+									Reset
+								</button>
+							</div>
+						</div>
+					) : (
+						<div className='w-full relative'>
+							<button
+								className='w-16 h-14 z-50 absolute p-0 hidden top-0 right-0 xl:flex items-center justify-center text-gray-800 border border-gray-300'
+								onClick={() => setCountDownOpen(!countDownOpen)}
+							>
+								<ClockFading />
+							</button>
+						</div>
+					)}
 				</aside>
 			</section>
 		</main>
