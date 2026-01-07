@@ -302,7 +302,7 @@ function App() {
 			>
 				<ClockFading />
 			</button>
-			<section className='flex flex-col-reverse xl:flex-row w-full gap-16 xl:gap-5 justify-center items-center relative xl:items-start pt-20 pb-8'>
+			<section className='flex flex-col-reverse xl:flex-row w-full gap-16 xl:gap-5 justify-center items-center relative xl:items-start pt-20 p-3 pb-8'>
 				<aside
 					className={`w-[calc(100%-1rem)] xl:w-96 fixed xl:sticky xl:mt-3 top-3 xl:left-auto min-h-80 h-[70vh] z-[100] transition-[left] duration-300  bg-gray-50 border border-gray-300 rounded-xl text-xl p-3 flex flex-col ${
 						projectsOpen ? 'left-2' : '-left-full'
@@ -415,11 +415,11 @@ function App() {
 				</aside>
 				<main className='w-full md:w-4/5 xl:max-w-[64rem] min-w-0 flex gap-3 flex-col xl:mt-3 min-h-32 relative'>
 					<div
-						className='absolute flex justify-center left-3 -top-[3.125rem]'
+						className='absolute flex justify-center left-3 -top-[42px] xl:-top-[3.125rem]'
 						style={currentProject ? { display: 'flex' } : { display: 'none' }}
 					>
 						<p
-							className='relative inline my-1 text-3xl px-7 p-1 z-30 !border-b-transparent font-medium text-gray-800 rounded-t-2xl border'
+							className='relative inline my-1 text-xl xl:text-3xl px-7 p-1 z-30 !border-b-transparent font-medium text-gray-800 rounded-t-2xl border'
 							style={{ ...cardStyleColor }}
 						>
 							{currentProject ? (
@@ -434,16 +434,16 @@ function App() {
 						</p>
 					</div>
 					<div
-						className='absolute flex justify-center gap-1 right-3 -top-[3.0625rem]'
+						className='absolute flex justify-center gap-1 right-3 -top-[42px] xl:-top-[3.0625rem]'
 						style={currentProject ? { display: 'flex' } : { display: 'none' }}
 					>
 						<p
-							className={`relative inline my-1 text-2xl px-6 py-2 rounded-t-2xl font-bold bg-gradient-to-r from-blue-600 to-sky-600 text-white border border-purple-500/30 border-b-transparent shadow-lg`}
+							className={`relative inline my-1 text- xl:text-2xl px-3 xl:px-6 py-2 rounded-t-2xl font-bold bg-gradient-to-r from-blue-600 to-sky-600 text-white border border-purple-500/30 border-b-transparent shadow-lg`}
 						>
 							Total: {formatMillisToAdjustedHM(calculateTotalTime())}
 						</p>
 						<p
-							className={`relative inline my-1 text-2xl px-6 py-2 rounded-t-2xl font-bold ${
+							className={`relative inline my-1 text- xl:text-2xl px-3 xl:px-6 py-2 rounded-t-2xl font-bold ${
 								cards.find(c => currentProject == c.id)?.checked
 									? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white'
 									: 'bg-gradient-to-r from-rose-600 to-pink-600 text-white'
