@@ -125,7 +125,7 @@ export function useTimer() {
 					if (updated <= 0) {
 						setCountDownActivated(false);
 						stopCounting();
-						const sound = new Audio('/countdown_stop.wav');
+						const sound = new Audio('/call_announce.mp3');
 						sound.play();
 						return 0;
 					}
