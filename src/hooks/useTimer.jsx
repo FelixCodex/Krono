@@ -31,13 +31,14 @@ export function useTimer() {
 		addCardToProject,
 		updateCardFromProject,
 		activated,
-		resumedId,
 		setResumedId,
 		currentProject,
 		setCountDownTime,
 		countDownActivated,
 		setCountDownActivated,
 		timerStateRef,
+		setActivated,
+		currentTimeout,
 	} = useCard();
 
 	const getCounterElements = useCallback(() => {
@@ -92,14 +93,23 @@ export function useTimer() {
 	]);
 
 	const stopCounting = useCallback(() => {
-		activated.current = false;
+		// activated.current = false;
+		setActivated(false);
+		clearTimeout(currentTimeout.current);
 
 		saveTimer();
 		setResumedId(null);
 
 		resetCounterUI();
 		resetTimerState();
-	}, [activated, saveTimer, setResumedId, resetCounterUI, resetTimerState]);
+	}, [
+		setActivated,
+		currentTimeout,
+		saveTimer,
+		setResumedId,
+		resetCounterUI,
+		resetTimerState,
+	]);
 
 	const handleInterval = useCallback(
 		startTime => {
@@ -127,15 +137,18 @@ export function useTimer() {
 
 			saveTimer();
 
-			setTimeout(() => handleInterval(startTime), oneSec);
+			const timeout = setTimeout(() => handleInterval(startTime), oneSec);
+			currentTimeout.current = timeout;
 		},
 		[
 			activated,
 			getCounterElements,
 			countDownActivated,
-			setCountDownActivated,
-			setCountDownTime,
 			saveTimer,
+			currentTimeout,
+			setCountDownTime,
+			setCountDownActivated,
+			stopCounting,
 		]
 	);
 
@@ -155,20 +168,7 @@ export function useTimer() {
 
 		// Timer resumido - detener
 		else if (activated.current === 'resumed') {
-			const now = Date.now();
-			const elapsed = now - timerStateRef.current.startTimestamp;
-
-			updateCardFromProject({
-				projectId: currentProject,
-				id: resumedId,
-				time: elapsed,
-			});
-
-			activated.current = false;
-			setResumedId(null);
-
-			resetCounterUI();
-			resetTimerState();
+			stopCounting();
 			return;
 		}
 
@@ -180,7 +180,8 @@ export function useTimer() {
 			}
 
 			const now = Date.now();
-			activated.current = true;
+			// activated.current = true;
+			setActivated(true);
 			input.disabled = true;
 
 			timerStateRef.current.isResumed = false;
@@ -193,13 +194,9 @@ export function useTimer() {
 		currentProject,
 		getCounterElements,
 		handleInterval,
-		resetCounterUI,
-		resetTimerState,
-		resumedId,
-		setResumedId,
+		setActivated,
 		stopCounting,
 		timerStateRef,
-		updateCardFromProject,
 	]);
 
 	const resumeClick = useCallback(
@@ -208,7 +205,8 @@ export function useTimer() {
 			const now = Date.now();
 			const startTime = now - time;
 
-			activated.current = 'resumed';
+			// activated.current = 'resumed';
+			setActivated('resumed');
 			setResumedId(id);
 
 			input.disabled = true;
@@ -221,7 +219,13 @@ export function useTimer() {
 
 			setTimeout(() => handleInterval(startTime), oneSec);
 		},
-		[getCounterElements, activated, setResumedId, timerStateRef, handleInterval]
+		[
+			getCounterElements,
+			setActivated,
+			setResumedId,
+			timerStateRef,
+			handleInterval,
+		]
 	);
 
 	return {

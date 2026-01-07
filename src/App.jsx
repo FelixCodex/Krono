@@ -58,10 +58,6 @@ function App() {
 
 	const addProjectInput = useRef();
 
-	useEffect(() => {
-		console.log(countDownActivatedState);
-	}, [countDownActivatedState]);
-
 	const handleModal = () => {
 		openModalWithPreset({ type: 'add' });
 	};
@@ -251,7 +247,7 @@ function App() {
 
 	const cardStyleColor = getStyleColor(
 		currentProjectCard && COLORS[currentProjectCard.color],
-		currentProjectCard.color
+		currentProjectCard ? currentProjectCard.color : null
 	);
 
 	return (
@@ -518,40 +514,37 @@ function App() {
 						</section>
 					)}
 
-					{currentProject && currentProjectCard.projectCards.length > 1 ? (
-						cards.map(item => {
-							if (item.id != currentProject) return null;
-							if (item.projectCards.length < 1) return null;
-							return item.projectCards.map(
-								({ id, title, dateinfo, color, checked }, i) => {
-									if (i == 0) return null;
-									const cardStyleColor = getStyleColor(
-										color && COLORS[color],
-										color
-									);
-									return (
-										<section
-											key={`cs-${(cardId.current += 1)}`}
-											className='w-full flex gap-3 flex-col border rounded-xl relative p-3 justify-start'
-											style={cardStyleColor}
-										>
-											<Card
-												key={`r-${(cardId.current += 1)}`}
-												id={id}
-												color={color}
-												title={title}
-												checked={checked}
-												showCardFee={showCardFee}
-												dateinfo={dateinfo}
-											></Card>
-										</section>
-									);
-								}
-							);
-						})
-					) : (
-						<></>
-					)}
+					{currentProject
+						? cards.map(item => {
+								if (item.id != currentProject) return null;
+								return item.projectCards.map(
+									({ id, title, dateinfo, color, checked }, i) => {
+										if (i == 0) return null;
+										const cardStyleColor = getStyleColor(
+											color && COLORS[color],
+											color
+										);
+										return (
+											<section
+												key={`cs-${(cardId.current += 1)}`}
+												className='w-full flex gap-3 flex-col border rounded-xl relative p-3 justify-start'
+												style={cardStyleColor}
+											>
+												<Card
+													key={`r-${(cardId.current += 1)}`}
+													id={id}
+													color={color}
+													title={title}
+													checked={checked}
+													showCardFee={showCardFee}
+													dateinfo={dateinfo}
+												></Card>
+											</section>
+										);
+									}
+								);
+						  })
+						: null}
 				</main>
 
 				<aside className='w-full md:w-4/5 xl:w-96 relative xl:sticky xl:top-3 xl:mt-3 text-xl flex flex-col items-center justify-center gap-4'>

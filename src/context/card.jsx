@@ -1,12 +1,13 @@
 import { createContext, useReducer, useRef, useState } from 'react';
 import { cardInitialState, cardReducer } from '../reducers/card.js';
 
-export const hourFeeInitialState = localStorage.getItem('hourFee') || 0;
+const hourFeeInitialState = localStorage.getItem('hourFee') || 0;
 
-export const mailInitialState = localStorage.getItem('mailToSend') || 0;
+const mailInitialState = localStorage.getItem('mailToSend') || 0;
 
-export const currentProjectInitialState =
-	localStorage.getItem('currentProject') || null;
+const currentProjectSaved = localStorage.getItem('currentProject') || null;
+const currentProjectInitialState =
+	currentProjectSaved != 'null' ? currentProjectSaved : null;
 
 export const CardContext = createContext();
 
@@ -22,10 +23,19 @@ function useCardReducer() {
 	const [mail, setMailValue] = useState(mailInitialState);
 	const [countDownTime, setCountDownTime] = useState(0);
 
+	const currentTimeout = useRef(null);
+
 	const countDownActivated = useRef(false);
 	const [countDownActivatedState, setCountDownActivatedState] = useState(false);
 
-	// Keep a mutable ref for timer logic and a state value to trigger UI updates.
+	const activated = useRef(false);
+	const [activatedState, setActivatedState] = useState(false);
+	const timerStateRef = useRef({
+		isResumed: false,
+		resumedCardId: 0,
+		startTimestamp: 0,
+	});
+
 	const setCountDownActivated = value => {
 		if (typeof value === 'boolean') {
 			countDownActivated.current = value;
@@ -36,12 +46,15 @@ function useCardReducer() {
 		}
 	};
 
-	const activated = useRef(false);
-	const timerStateRef = useRef({
-		isResumed: false,
-		resumedCardId: 0,
-		startTimestamp: 0,
-	});
+	const setActivated = value => {
+		if (typeof value === 'boolean' || value === 'resumed') {
+			activated.current = value;
+			setActivatedState(value);
+		} else {
+			activated.current = !activated.current;
+			setActivatedState(activated.current);
+		}
+	};
 
 	const addNewProject = product =>
 		dispatch({
@@ -125,11 +138,12 @@ function useCardReducer() {
 		countDownTime,
 		setCountDownTime,
 		countDownActivated,
-		// state to trigger UI updates when count down is toggled
 		countDownActivatedState,
-		// setter that keeps ref and state in sync
 		setCountDownActivated,
 		timerStateRef,
+		activatedState,
+		setActivated,
+		currentTimeout,
 	};
 }
 
