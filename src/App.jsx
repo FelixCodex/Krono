@@ -357,7 +357,7 @@ function App() {
 									{moreOptionOpen ? (
 										<X className={'size-6'} />
 									) : (
-										<Ellipsis className={'size-8'} />
+										<Ellipsis className={'size-6 text-gray-800'} />
 									)}
 								</button>
 								<div
