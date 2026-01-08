@@ -26,6 +26,8 @@ const formatTimeToCounterText = time => {
 
 const generateId = () => Math.floor(Math.random() * 10000);
 
+let last = 0;
+
 export function useTimer() {
 	const {
 		addCardToProject,
@@ -38,7 +40,7 @@ export function useTimer() {
 		setCountDownActivated,
 		timerStateRef,
 		setActivated,
-		currentTimeout,
+		currentInterval,
 	} = useCard();
 
 	const getCounterElements = useCallback(() => {
@@ -95,7 +97,7 @@ export function useTimer() {
 	const stopCounting = useCallback(() => {
 		// activated.current = false;
 		setActivated(false);
-		clearTimeout(currentTimeout.current);
+		clearInterval(currentInterval.current);
 
 		saveTimer();
 		setResumedId(null);
@@ -104,7 +106,7 @@ export function useTimer() {
 		resetTimerState();
 	}, [
 		setActivated,
-		currentTimeout,
+		currentInterval,
 		saveTimer,
 		setResumedId,
 		resetCounterUI,
@@ -118,6 +120,9 @@ export function useTimer() {
 			const now = Date.now();
 			const elapsed = now - startTime;
 			const { text } = getCounterElements();
+
+			console.log(elapsed - last);
+			last = elapsed;
 
 			if (countDownActivated.current) {
 				setCountDownTime(prev => {
@@ -136,16 +141,12 @@ export function useTimer() {
 			text.textContent = formatTimeToCounterText(elapsed);
 
 			saveTimer();
-
-			const timeout = setTimeout(() => handleInterval(startTime), oneSec);
-			currentTimeout.current = timeout;
 		},
 		[
 			activated,
 			getCounterElements,
 			countDownActivated,
 			saveTimer,
-			currentTimeout,
 			setCountDownTime,
 			setCountDownActivated,
 			stopCounting,
@@ -187,10 +188,12 @@ export function useTimer() {
 			timerStateRef.current.isResumed = false;
 			timerStateRef.current.startTimestamp = now;
 
-			setTimeout(() => handleInterval(now), oneSec);
+			const interval = setInterval(() => handleInterval(now), oneSec);
+			currentInterval.current = interval;
 		}
 	}, [
 		activated,
+		currentInterval,
 		currentProject,
 		getCounterElements,
 		handleInterval,
@@ -217,13 +220,15 @@ export function useTimer() {
 			timerStateRef.current.resumedCardId = id;
 			timerStateRef.current.startTimestamp = startTime;
 
-			setTimeout(() => handleInterval(startTime), oneSec);
+			const interval = setInterval(() => handleInterval(startTime), oneSec);
+			currentInterval.current = interval;
 		},
 		[
 			getCounterElements,
 			setActivated,
 			setResumedId,
 			timerStateRef,
+			currentInterval,
 			handleInterval,
 		]
 	);

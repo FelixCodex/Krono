@@ -23,7 +23,7 @@ function useCardReducer() {
 	const [mail, setMailValue] = useState(mailInitialState);
 	const [countDownTime, setCountDownTime] = useState(0);
 
-	const currentTimeout = useRef(null);
+	const currentInterval = useRef(null);
 
 	const countDownActivated = useRef(false);
 	const [countDownActivatedState, setCountDownActivatedState] = useState(false);
@@ -143,7 +143,7 @@ function useCardReducer() {
 		timerStateRef,
 		activatedState,
 		setActivated,
-		currentTimeout,
+		currentInterval,
 	};
 }
 
