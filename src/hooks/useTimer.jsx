@@ -26,8 +26,6 @@ const formatTimeToCounterText = time => {
 
 const generateId = () => Math.floor(Math.random() * 10000);
 
-let last = 0;
-
 export function useTimer() {
 	const {
 		addCardToProject,
@@ -120,9 +118,6 @@ export function useTimer() {
 			const now = Date.now();
 			const elapsed = now - startTime;
 			const { text } = getCounterElements();
-
-			console.log(elapsed - last);
-			last = elapsed;
 
 			if (countDownActivated.current) {
 				setCountDownTime(prev => {
