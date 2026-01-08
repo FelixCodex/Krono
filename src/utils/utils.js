@@ -35,9 +35,9 @@ export function formatDateToTimePassed({ hours, minutes }) {
 }
 
 export function convertTimeInMillisToHMS(time) {
-	let hours = Math.floor((time % oneDay) / oneHour);
+	let hours = Math.floor(time / oneHour);
 	let minutes = Math.floor((time % oneHour) / oneMin);
-	let segs = Math.floor((time % oneMin) / 1000);
+	let segs = Math.floor((time % oneMin) / oneSec);
 
 	// hours = formatNumber(hours);
 	// minutes = formatNumber(minutes);
@@ -47,7 +47,7 @@ export function convertTimeInMillisToHMS(time) {
 }
 
 export function formatMillisToAdjustedHM(time) {
-	let hours = Math.floor((time % oneDay) / oneHour);
+	let hours = Math.floor(time / oneHour);
 	let minutes = Math.floor((time % oneHour) / oneMin);
 
 	hours = formatNumberAdjusted(hours);
