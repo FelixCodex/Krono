@@ -37,7 +37,7 @@ function App() {
 		addNewProject,
 		currentProject,
 		updateProject,
-		renameCardFromProject,
+		updateCardFromProject,
 		hourFee,
 		setHourFee,
 		mail,
@@ -97,7 +97,7 @@ function App() {
 				break;
 			}
 			case 'update': {
-				renameCardFromProject({
+				updateCardFromProject({
 					id: button.dataset.id,
 					projectId: currentProject,
 					title: addProjectInput.current.value,
